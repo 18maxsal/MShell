@@ -5,9 +5,6 @@ def main():
     while True:
         sys.stdout.write("$ ") # Used instead of print because this way does not include a newline
         command = input().split(" ")
-        # command = command.split(" ")
-        # print(f"command: {command}")
-        # print(f"command[0]: {command[0]}")
         if command[0] == "exit":
             break
         elif command[0] == "echo":
