@@ -2,13 +2,22 @@ import sys
 
 
 def main():
-    # TODO: Uncomment the code below to pass the first stage
     while True:
         sys.stdout.write("$ ") # Used instead of print because this way does not include a newline
-        command = input()
-        if command == "exit":
+        command = input().split(" ")
+        # command = command.split(" ")
+        # print(f"command: {command}")
+        # print(f"command[0]: {command[0]}")
+        if command[0] == "exit":
             break
-        print(f"{command}: command not found")
+        elif command[0] == "echo":
+            # to_print = command.split(" ")
+            to_print = ""
+            if len(command) > 1:
+                to_print = " ".join(command[1:])
+            print(to_print)
+        else:
+            print(f"{command[0]}: command not found")
     
 
 
