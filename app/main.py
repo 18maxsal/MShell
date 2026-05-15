@@ -3,9 +3,10 @@ import sys
 
 def main():
     # TODO: Uncomment the code below to pass the first stage
-    sys.stdout.write("$ ")
-    command = input()
-    sys.stdout.write(f"{command}: command not found")
+    while True:
+        sys.stdout.write("$ ") # Used instead of print because this way does not include a newline
+        command = input()
+        print(f"{command}: command not found")
     pass
 
 
