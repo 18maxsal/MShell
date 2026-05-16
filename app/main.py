@@ -19,9 +19,9 @@ def main():
             else: # Case: there is no command[1] (i.e. we just have "type " for input)
                 #TODO: Finish
                 if command[1]:
-                    print(f"{command[1]}: command not found")
+                    print(f"{command[1]}: not found")
                 else:
-                    print("command not found")
+                    print("not found")
         else:
             print(f"{command[0]}: command not found")
     
