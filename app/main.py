@@ -18,7 +18,10 @@ def main():
                 print(f"{command[1]} is a shell builtin")
             else: # Case: there is no command[1] (i.e. we just have "type " for input)
                 #TODO: Finish
-                print(": command not found")
+                if command[1]:
+                    print(f"{command[1]}: command not found")
+                else:
+                    print("command not found")
         else:
             print(f"{command[0]}: command not found")
     
