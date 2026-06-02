@@ -17,23 +17,12 @@ def typeHeler(command: list[str]) -> None:
         if command[1]:
             path = os.environ.get('PATH')
             path_list = path.split(os.pathsep)
-            # print(path_list)
             for i in range(len(path_list)):
-                # print(f"{i}: {path_list[i]}")
                 full_path = os.path.join(path_list[i], command[1])
                 if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
                     print(f"{command[1]} is {full_path}")
                     return
-
-            # path = Path.cwd()
-            # path = Path('/')
-            # for subdir in path.iterdir():
-            #     if subdir.is_dir():
-            #         print(subdir)
-            # print(f"current path: {path}")
-
             print(f"{command[1]}: not found")
-
 
         else: # Case: there is no command[1] (i.e. we just have "type " for input)
             print("not found")
