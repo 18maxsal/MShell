@@ -22,7 +22,7 @@ def typeHeler(command: list[str]) -> None:
                 # print(f"{i}: {path_list[i]}")
                 full_path = os.path.join(path_list[i], command[1])
                 if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-                    print(f"{command[1]} is {path_list[i]}")
+                    print(f"{command[1]} is {full_path}")
                     return
 
             # path = Path.cwd()
