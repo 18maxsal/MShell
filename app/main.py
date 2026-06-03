@@ -33,6 +33,7 @@ def externalCommandRunnerHelper(command: list[str]) -> bool:
     path_list = path.split(os.pathsep)
     for i in range(len(path_list)):
         full_path = os.path.join(path_list[i], command[0])
+        # print(f"full_path: {full_path}")
         if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
             if full_path.endswith(command[0]):
                 full_path = full_path.split("/")
@@ -48,6 +49,19 @@ def externalCommandRunnerHelper(command: list[str]) -> bool:
 
 def pwdHelper() -> None:
     print(Path.cwd())
+
+def changeDirectoryHelper(command: list[str]) -> None:
+
+    # Handling absolute Paths here
+    path = Path(command[1])
+    try:
+        os.chdir(path)
+    except FileNotFoundError as FNFE:
+        print(f"{path}: no such file or directory")
+    except NotADirectoryError as NADE:
+        print(f"{path}: no such file or directory")
+    except Exception as E:
+        print(f"{path}: no such file or directory")
 
 def main():
     while True:
