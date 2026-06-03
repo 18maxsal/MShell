@@ -29,11 +29,12 @@ def typeHeler(command: list[str]) -> None:
             print("not found")
 
 def externalCommandRunnerHelper(command: list[str]) -> bool:
-    counter = 10
+    # counter = 10
     path = os.environ.get('PATH')
     path_list = path.split(os.pathsep)
     for i in range(len(path_list)):
         full_path = os.path.join(path_list[i], command[1])
+        print(f"full path: {full_path}, path_list[{i}]: {path_list[i]}")
         # print(full_path)
         # print(path_list[i])
         # counter -= 1
@@ -47,7 +48,7 @@ def externalCommandRunnerHelper(command: list[str]) -> bool:
                 custom_command.append(command[i])
             # process_to_run = full_path
             # subprocess.run([full_path, ])
-            print(f"custom command: {custom_command}") # TEMP
+            # print(f"custom command: {custom_command}") # TEMP
             subprocess.run(custom_command)
             return True
 
