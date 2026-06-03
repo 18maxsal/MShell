@@ -46,15 +46,17 @@ def externalCommandRunnerHelper(command: list[str]) -> bool:
         # if counter == 0:
         #     break
         if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-            print("aaaa")
+            # print("aaaa")
             # break
             custom_command = [full_path]
             ptr = 1
+            print(f"custom_command before: {custom_command}")
             while ptr < len(command):
                 custom_command.append(command[i])
             # process_to_run = full_path
             # subprocess.run([full_path, ])
-            print(f"custom command to run: {custom_command}") # TEMP
+            print(f"custom_command AFTER: {custom_command}")
+            # print(f"custom command to run: {custom_command}") # TEMP
             subprocess.run(custom_command)
             return True
 
