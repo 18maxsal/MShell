@@ -30,6 +30,7 @@ def typeHeler(command: list[str]) -> None:
 
 def externalCommandRunnerHelper(command: list[str]) -> bool:
     # counter = 10
+    print(command)
     path = os.environ.get('PATH')
     path_list = path.split(os.pathsep)
     for i in range(len(path_list)):
