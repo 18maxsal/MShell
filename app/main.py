@@ -68,6 +68,7 @@ def main():
             typeHeler(command = command)
         
         else:
+            command.insert("type", 0) # TEMP
             typeHeler(command = command) # TEMP
             if not externalCommandRunnerHelper(command = command):
                 print(f"{command[0]}: command not found")
