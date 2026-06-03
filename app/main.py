@@ -52,27 +52,18 @@ def pwdHelper() -> None:
 
 def changeDirectoryHelper(command: list[str]) -> None:
 
-    # Handling absolute Paths here
-    # path = Path(command[1])
-    # try:
-    #     os.chdir(path)
-    # except FileNotFoundError as FNFE:
-    #     print(f"cd: {path}: No such file or directory")
-    # except NotADirectoryError as NADE:
-    #     print(f"cd: {path}: No such file or directory")
-    # except Exception as E:
-    #     print(f"cd: {path}: No such file or directory")
-    
-    # # Handling relative paths here
-    
+    # Handles going to the home directory 
     if command[1] == "~":
         path = Path.home()
         os.chdir(path)
         return
     
+    # Handles absolute and relative paths (i.e. /. and /..)
     path = os.path.realpath(command[1])
     if os.path.exists(path):
         os.chdir(path)
+    
+    # Handles invalid input
     else:
         print(f"cd: {path}: No such file or directory")
 
