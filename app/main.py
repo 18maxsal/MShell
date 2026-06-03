@@ -57,11 +57,11 @@ def changeDirectoryHelper(command: list[str]) -> None:
     try:
         os.chdir(path)
     except FileNotFoundError as FNFE:
-        print(f"{path}: no such file or directory")
+        print(f"cd: {path}: no such file or directory")
     except NotADirectoryError as NADE:
-        print(f"{path}: no such file or directory")
+        print(f"cd: {path}: no such file or directory")
     except Exception as E:
-        print(f"{path}: no such file or directory")
+        print(f"cd: {path}: no such file or directory")
 
 def main():
     while True:
