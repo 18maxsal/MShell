@@ -34,8 +34,9 @@ def externalCommandRunnerHelper(command: list[str]) -> bool:
     path = os.environ.get('PATH')
     path_list = path.split(os.pathsep)
     for i in range(len(path_list)):
-        full_path = os.path.join(path_list[i], command[0])
+        # full_path = os.path.join(path_list[i], command[0])
         # print(f"full path: {full_path}, path_list[{i}]: {path_list[i]}")
+        full_path = os.path.join(path_list[i], command[1]) # TEMP
         print(full_path)
         # print(path_list[i])
         # counter -= 1
