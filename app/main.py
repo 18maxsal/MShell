@@ -3,7 +3,7 @@ import os
 import subprocess
 from pathlib import Path
 
-BUILT_INS = ["echo", "exit", "type"]
+BUILT_INS = ["echo", "exit", "type", "pwd"]
 
 def echoHelper(command: list[str]) -> None:
     to_print = ""
