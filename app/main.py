@@ -55,7 +55,7 @@ def externalCommandRunnerHelper(command: list[str]) -> bool:
                 # print(f"custom_command before: {custom_command}")
                 while ptr < len(command):
                     # print("ptr: ", ptr)
-                    custom_command.append(command[i])
+                    custom_command.append(command[ptr])
                     ptr += 1
                 # process_to_run = full_path
                 # subprocess.run([full_path, ])
