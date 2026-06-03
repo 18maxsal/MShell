@@ -46,6 +46,9 @@ def externalCommandRunnerHelper(command: list[str]) -> bool:
 
     return False
 
+def pwdHelper() -> None:
+    print(Path.cwd())
+
 def main():
     while True:
         sys.stdout.write("$ ") # Used instead of print because this way does not include a newline
@@ -57,6 +60,9 @@ def main():
             
         elif command[0] == "type":
             typeHeler(command = command)
+        
+        elif command[0] == "pwd":
+            pwdHelper()
         
         else:
             # command.insert(0, "type") # TEMP
