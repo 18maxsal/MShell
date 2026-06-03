@@ -49,7 +49,8 @@ def externalCommandRunnerHelper(command: list[str]) -> bool:
             # print("aaaa")
             # break
             if full_path.endswith(command[0]):
-                custom_command = [full_path]
+                full_path = full_path.split("/")
+                custom_command = [full_path[-1]]
                 ptr = 1
                 # print(f"custom_command before: {custom_command}")
                 while ptr < len(command):
