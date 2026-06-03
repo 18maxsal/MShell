@@ -46,7 +46,7 @@ def externalCommandRunnerHelper(command: list[str]) -> bool:
         # if counter == 0:
         #     break
         if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-            # print("aaaa")
+            print("aaaa")
             # break
             custom_command = [full_path]
             ptr = 1
