@@ -30,13 +30,13 @@ def typeHeler(command: list[str]) -> None:
 
 def externalCommandRunnerHelper(command: list[str]) -> bool:
     # counter = 10
-    print(command)
+    # print(command) # format: external_command arg1 arg2 ...
     path = os.environ.get('PATH')
     path_list = path.split(os.pathsep)
     for i in range(len(path_list)):
-        full_path = os.path.join(path_list[i], command[1])
-        print(f"full path: {full_path}, path_list[{i}]: {path_list[i]}")
-        # print(full_path)
+        full_path = os.path.join(path_list[i], command[0])
+        # print(f"full path: {full_path}, path_list[{i}]: {path_list[i]}")
+        print(full_path)
         # print(path_list[i])
         # counter -= 1
 
@@ -44,7 +44,7 @@ def externalCommandRunnerHelper(command: list[str]) -> bool:
         #     break
         if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
             custom_command = [full_path]
-            ptr = 2
+            ptr = 1
             while ptr < len(command):
                 custom_command.append(command[i])
             # process_to_run = full_path
