@@ -3,7 +3,7 @@ import os
 import subprocess
 from pathlib import Path
 
-BUILT_INS = ["echo", "exit", "type", "pwd"]
+BUILT_INS = ["echo", "exit", "type", "pwd", "cd"]
 
 def echoHelper(command: list[str]) -> None:
     to_print = ""
@@ -77,6 +77,9 @@ def main():
         
         elif command[0] == "pwd":
             pwdHelper()
+        
+        elif command[0] == "cd":
+            changeDirectoryHelper(command = command)
         
         else:
             # command.insert(0, "type") # TEMP
