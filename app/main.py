@@ -47,6 +47,7 @@ def externalCommandRunnerHelper(command: list[str]) -> bool:
                 custom_command.append(command[i])
             # process_to_run = full_path
             # subprocess.run([full_path, ])
+            print(f"custom command: {custom_command}") # TEMP
             subprocess.run(custom_command)
             return True
 
