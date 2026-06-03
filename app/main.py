@@ -66,7 +66,8 @@ def changeDirectoryHelper(command: list[str]) -> None:
     # # Handling relative paths here
     
     if command[1] == "~":
-        os.chdir(Path.home)
+        path = Path.home()
+        os.chdir(path)
         return
     
     path = os.path.realpath(command[1])
