@@ -1,5 +1,6 @@
 import sys
 import os
+import subprocess
 from pathlib import Path
 
 BUILT_INS = ["echo", "exit", "type"]
@@ -27,6 +28,30 @@ def typeHeler(command: list[str]) -> None:
         else: # Case: there is no command[1] (i.e. we just have "type " for input)
             print("not found")
 
+def externalCommandRunnerHelper(command: list[str]) -> bool:
+    counter = 10
+    path = os.environ.get('PATH')
+    path_list = path.split(os.pathsep)
+    for i in range(len(path_list)):
+        full_path = os.path.join(path_list[i], command[1])
+        # print(full_path)
+        # print(path_list[i])
+        # counter -= 1
+
+        # if counter == 0:
+        #     break
+        if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
+            custom_command = [full_path]
+            ptr = 2
+            while ptr < len(command):
+                custom_command.append(command[i])
+            # process_to_run = full_path
+            # subprocess.run([full_path, ])
+            subprocess.run(custom_command)
+            return True
+
+    return False
+
 def main():
     while True:
         sys.stdout.write("$ ") # Used instead of print because this way does not include a newline
@@ -36,28 +61,12 @@ def main():
         elif command[0] == "echo":
             echoHelper(command = command)
             
-            # to_print = ""
-            # if len(command) > 1:
-            #     to_print = " ".join(command[1:])
-            # print(to_print)
-
         elif command[0] == "type":
             typeHeler(command = command)
-            # if command[1] and command[1] in BUILT_INS:
-            #     print(f"{command[1]} is a shell builtin")
-            # else: # Command is not Built-in
-            #     if command[1]:
-
-            #         print(f"{command[1]}: not found")
-
-
-            #     else: # Case: there is no command[1] (i.e. we just have "type " for input)
-            #         print("not found")
         
         else:
-            print(f"{command[0]}: command not found")
-    
-
+            if not externalCommandRunnerHelper(command = command):
+                print(f"{command[0]}: command not found")
 
 if __name__ == "__main__":
     main()
