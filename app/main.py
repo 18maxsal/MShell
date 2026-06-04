@@ -69,20 +69,21 @@ def changeDirectoryHelper(command: list[str]) -> None:
         print(f"cd: {path}: No such file or directory")
 
     
-def historyHelper(n: int = len(history)) -> None:
+def historyHelper(command: list[str]) -> None:
     
-    if n == len(history):
+    if not command[1]:
         for i in range(len(history)):
             print(f"{i + 1} {history[i]}")
     
     else:
-        i = len(history) - 1
+        n = len(history)
+        i = n - 1
         while n:
             print(f"{n} {history[i]}")
             i -= 1
             n -= 1
 
-            
+
 def main():
     while True:
         sys.stdout.write("$ ") # Used instead of print because this way does not include a newline
