@@ -3,7 +3,8 @@ import os
 import subprocess
 from pathlib import Path
 
-BUILT_INS = ["echo", "exit", "type", "pwd", "cd"]
+BUILT_INS = ["echo", "exit", "type", "pwd", "cd", "history"]
+history = []
 
 def echoHelper(command: list[str]) -> None:
     to_print = ""
@@ -68,31 +69,46 @@ def changeDirectoryHelper(command: list[str]) -> None:
         print(f"cd: {path}: No such file or directory")
 
     
-
+def historyHelper() -> None:
+    
+    for i in range(len(history)):
+        print(f"{i + 1} {history[i]}")
 
 def main():
     while True:
         sys.stdout.write("$ ") # Used instead of print because this way does not include a newline
-        command = input().split(" ")
+        command = input()
+        to_add_history_command = command
+        command = command.split(" ")
         if command[0] == "exit":
             break
         elif command[0] == "echo":
             echoHelper(command = command)
+            history.append(to_add_history_command)
             
         elif command[0] == "type":
             typeHeler(command = command)
+            history.append(to_add_history_command)
         
         elif command[0] == "pwd":
             pwdHelper()
+            history.append(to_add_history_command)
         
         elif command[0] == "cd":
             changeDirectoryHelper(command = command)
+            history.append(to_add_history_command)
+        
+        elif command[0] == "history":
+            history.append(to_add_history_command)
+            historyHelper()
         
         else:
             # command.insert(0, "type") # TEMP
             # typeHeler(command = command) # TEMP
             if not externalCommandRunnerHelper(command = command):
                 print(f"{command[0]}: command not found")
+            else:
+                history.append(to_add_history_command)
 
 if __name__ == "__main__":
     main()
