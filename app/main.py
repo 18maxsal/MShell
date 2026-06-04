@@ -76,21 +76,9 @@ def historyHelper(command: list[str]) -> None:
             print(f"{i + 1} {history[i]}")
     
     else: 
-        #TODO: Fix this block of code
         from_history = int(command[1])
         for i in range(len(history) - from_history, len(history)):
-            # print(f"   {from_history} {history[i]}")
             print(f"   {i} {history[i]}")
-            # from_history += 1
-        # n = len(history)
-        # i = n - 1
-        # iterations = int(command[1])
-        # while iterations:
-        #     print(f"    {i} {history[i - 1]}")
-        #     iterations -= 1
-        #     i -= 1
-        #     n -= 1
-
 
 def main():
     while True:
