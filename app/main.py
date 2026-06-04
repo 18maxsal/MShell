@@ -110,7 +110,7 @@ def main():
         
         elif command[0] == "history":
             history.append(to_add_history_command)
-            historyHelper()
+            historyHelper(command = command)
         
         else:
             # command.insert(0, "type") # TEMP
