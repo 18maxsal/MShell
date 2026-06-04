@@ -79,7 +79,7 @@ def historyHelper(command: list[str]) -> None:
         n = len(history)
         i = n - 1
         while n:
-            print(f"{n} {history[i]}")
+            print(f"   {i} {history[i]}")
             i -= 1
             n -= 1
 
