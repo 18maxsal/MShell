@@ -2,9 +2,13 @@ import sys
 import os
 import subprocess
 from pathlib import Path
+import readline
 
 BUILT_INS = ["echo", "exit", "type", "pwd", "cd", "history"]
 history = []
+history_file =  os.path.expanduser("~/.mshell_history")
+
+
 
 def echoHelper(command: list[str]) -> None:
     to_print = ""
