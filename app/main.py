@@ -5,8 +5,10 @@ from pathlib import Path
 import readline
 
 BUILT_INS = ["echo", "exit", "type", "pwd", "cd", "history"]
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 history = []
-history_file =  os.path.expanduser("~/.mshell_history")
+# history_file =  os.path.expanduser("~/.mshell_history")
+history_file = str(PROJECT_ROOT) + "/.mshell_history" 
 
 
 
