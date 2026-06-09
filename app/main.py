@@ -2,23 +2,26 @@ import sys
 import os
 import subprocess
 from pathlib import Path
-try: 
-    import readline
-except ImportError:
-    import pyreadline3 as readline
+from prompt_toolkit import PromptSession
+from prompt_toolkit.history import FileHistory
+# try: 
+#     import readline
+# except ImportError:
+#     import pyreadline3 as readline
 
 BUILT_INS = ["echo", "exit", "type", "pwd", "cd", "history"]
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+# PROJECT_ROOT = Path(__file__).resolve().parent.parent
 history = []
 # history_file =  os.path.expanduser("~/.mshell_history")
 # history_file = str(PROJECT_ROOT) + "/.mshell_history" 
 # history_file = str(PROJECT_ROOT) + "/.mshell_history"
 HISTORY_FILE = ".mshell_history"
+session = PromptSession(history=FileHistory(HISTORY_FILE))
 
-try:
-    readline.read_history_file(HISTORY_FILE)
-except FileNotFoundError:
-    pass
+# try:
+#     readline.read_history_file(HISTORY_FILE)
+# except FileNotFoundError:
+#     pass
 
 def echoHelper(command: list[str]) -> None:
     to_print = ""
@@ -84,42 +87,57 @@ def changeDirectoryHelper(command: list[str]) -> None:
 
     
 def historyHelper(command: list[str]) -> None:
-    
+
+
     if len(command) == 1:
         for i in range(len(history)):
             print(f"{i + 1} {history[i]}")
     
     else: 
-        from_history = int(command[1])
-        for i in range(len(history) - from_history, len(history)):
-            print(f"   {i} {history[i]}")
+
+        if command[1] == "-r":
+            path_to_history_file = command[2]
+            session = PromptSession(history=FileHistory(path_to_history_file))
+
+        else:
+            from_history = int(command[1])
+            for i in range(len(history) - from_history, len(history)):
+                print(f"   {i} {history[i]}")
 
 def main():
     while True:
+        # sys.stdout.flush()
         # sys.stdout.write("$ ") # Used instead of print because this way does not include a newline
-        command = input("$ ")
+        # command = input("$ ")
+        command = session.prompt("$ ")
         to_add_history_command = command
         command = command.split(" ")
+        print(len(command))
+        print(command)
+        
+        if len(command) == 1 and command[0] == '':
+            continue
+
         if command[0] == "exit":
             break
         elif command[0] == "echo":
             echoHelper(command = command)
-            history.append(to_add_history_command)
+            # history.append(to_add_history_command)
             
         elif command[0] == "type":
             typeHeler(command = command)
-            history.append(to_add_history_command)
+            # history.append(to_add_history_command)
         
         elif command[0] == "pwd":
             pwdHelper()
-            history.append(to_add_history_command)
+            # history.append(to_add_history_command)
         
         elif command[0] == "cd":
             changeDirectoryHelper(command = command)
-            history.append(to_add_history_command)
+            # history.append(to_add_history_command)
         
         elif command[0] == "history":
-            history.append(to_add_history_command)
+            # history.append(to_add_history_command)
             historyHelper(command = command)
         
         else:
@@ -128,8 +146,10 @@ def main():
             if not externalCommandRunnerHelper(command = command):
                 print(f"{command[0]}: command not found")
             else:
-                history.append(to_add_history_command)
-        # sys.stdout.flush()
+                pass
+                # history.append(to_add_history_command)
+        history.append(to_add_history_command)
+        sys.stdout.flush()
 
 if __name__ == "__main__":
     main()
