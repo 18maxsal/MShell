@@ -2,15 +2,23 @@ import sys
 import os
 import subprocess
 from pathlib import Path
-import readline
+try: 
+    import readline
+except ImportError:
+    import pyreadline3 as readline
 
 BUILT_INS = ["echo", "exit", "type", "pwd", "cd", "history"]
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 history = []
 # history_file =  os.path.expanduser("~/.mshell_history")
-history_file = str(PROJECT_ROOT) + "/.mshell_history" 
+# history_file = str(PROJECT_ROOT) + "/.mshell_history" 
+# history_file = str(PROJECT_ROOT) + "/.mshell_history"
+HISTORY_FILE = ".mshell_history"
 
-
+try:
+    readline.read_history_file(HISTORY_FILE)
+except FileNotFoundError:
+    pass
 
 def echoHelper(command: list[str]) -> None:
     to_print = ""
