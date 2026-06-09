@@ -129,6 +129,7 @@ def main():
                 print(f"{command[0]}: command not found")
             else:
                 history.append(to_add_history_command)
+        # sys.stdout.flush()
 
 if __name__ == "__main__":
     main()
