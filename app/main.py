@@ -96,8 +96,8 @@ def historyHelper(command: list[str]) -> None:
 
 def main():
     while True:
-        sys.stdout.write("$ ") # Used instead of print because this way does not include a newline
-        command = input()
+        # sys.stdout.write("$ ") # Used instead of print because this way does not include a newline
+        command = input("$ ")
         to_add_history_command = command
         command = command.split(" ")
         if command[0] == "exit":
