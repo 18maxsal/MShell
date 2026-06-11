@@ -106,8 +106,8 @@ def historyHelper(command: list[str]) -> None:
     else: 
 
         if command[1] == "-r":
-            path_to_history_file = command[2]
             global session 
+            path_to_history_file = command[2]
             session = PromptSession(history=FileHistory(path_to_history_file))
 
 
