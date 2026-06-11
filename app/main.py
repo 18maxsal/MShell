@@ -122,8 +122,8 @@ def main():
         command = session.prompt("$ ")
         to_add_history_command = command
         command = command.split(" ")
-        print(len(command))
-        print(command)
+        # print(len(command))
+        # print(command)
         
         if len(command) == 1 and command[0] == '':
             continue
