@@ -13,7 +13,7 @@ from prompt_toolkit.history import FileHistory
 #     from prompt_toolkit import PromptSession
 #     from prompt_toolkit.history import FileHistory
 
-print(sys.platform)
+# print(sys.platform)
 # try: 
 #     import readline
 # except ImportError:
