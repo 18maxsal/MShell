@@ -2,8 +2,15 @@ import sys
 import os
 import subprocess
 from pathlib import Path
-from prompt_toolkit import PromptSession
-from prompt_toolkit.history import FileHistory
+
+# Ensuring program works regardless of OS that user is running
+if sys.platform != "win32":
+    import readline
+else:
+    from prompt_toolkit import PromptSession
+    from prompt_toolkit.history import FileHistory
+
+print(sys.platform)
 # try: 
 #     import readline
 # except ImportError:
