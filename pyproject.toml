@@ -2,4 +2,7 @@
 name = "codecrafters-shell"
 version = "0.1.0"
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "prompt_toolkit>=3.0.52",
+    "pyreadline3>=3.5.6" 
+]
