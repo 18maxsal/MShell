@@ -21,12 +21,12 @@ from prompt_toolkit.history import FileHistory
 
 BUILT_INS = ["echo", "exit", "type", "pwd", "cd", "history"]
 # PROJECT_ROOT = Path(__file__).resolve().parent.parent
-history = []
 # history_file =  os.path.expanduser("~/.mshell_history")
 # history_file = str(PROJECT_ROOT) + "/.mshell_history" 
 # history_file = str(PROJECT_ROOT) + "/.mshell_history"
 HISTORY_FILE = ".mshell_history"
-session = PromptSession(history=FileHistory(HISTORY_FILE))
+current_history_file = HISTORY_FILE
+session = PromptSession(history=FileHistory(current_history_file))
 
 # try:
 #     readline.read_history_file(HISTORY_FILE)
@@ -95,26 +95,52 @@ def changeDirectoryHelper(command: list[str]) -> None:
     else:
         print(f"cd: {path}: No such file or directory")
 
+
+def getHistoryEntries() -> list[str]:
+    return list(session.history.get_strings())
+
     
 def historyHelper(command: list[str]) -> None:
 
 
     if len(command) == 1:
-        for i in range(len(history)):
-            print(f"{i + 1} {history[i]}")
+        entries = getHistoryEntries()
+        for i in range(len(entries)):
+            print(f"{i + 1} {entries[i]}")
     
     else: 
 
         if command[1] == "-r":
-            global session 
-            path_to_history_file = command[2]
-            session = PromptSession(history=FileHistory(path_to_history_file))
+            global session
+            global current_history_file
+            path_to_history_file = os.path.expanduser(command[2])
+            history_parent = os.path.dirname(path_to_history_file)
+            if history_parent:
+                os.makedirs(history_parent, exist_ok = True)
+            current_history_file = path_to_history_file
+            session = PromptSession(history=FileHistory(current_history_file))
+
+
+            # global session 
+            # path_to_history_file = command[2]
+            # session = PromptSession(history=FileHistory(path_to_history_file))
 
 
         else:
-            from_history = int(command[1])
-            for i in range(len(history) - from_history, len(history)):
-                print(f"   {i} {history[i]}")
+            try: 
+                from_history = int(command[1])
+            except ValueError as VE:
+                return
+            entries = getHistoryEntries()
+            start = max(len(entries) - from_history, 0)
+            for i in range(start, len(entries)):
+                print(f"   {i + 1} {entries[i]}")
+
+
+
+            # from_history = int(command[1])
+            # for i in range(len(history) - from_history, len(history)):
+            #     print(f"   {i} {history[i]}")
 
 def main():
     while True:
@@ -122,7 +148,6 @@ def main():
         # sys.stdout.write("$ ") # Used instead of print because this way does not include a newline
         # command = input("$ ")
         command = session.prompt("$ ")
-        to_add_history_command = command
         command = command.split(" ")
         # print(len(command))
         # print(command)
@@ -160,7 +185,6 @@ def main():
             else:
                 pass
                 # history.append(to_add_history_command)
-        history.append(to_add_history_command)
         sys.stdout.flush()
 
 if __name__ == "__main__":
