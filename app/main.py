@@ -106,7 +106,7 @@ def historyHelper(command: list[str]) -> None:
     if len(command) == 1:
         entries = getHistoryEntries()
         for i in range(len(entries)):
-            print(f"{i + 1} {entries[i]}")
+            print(f"   {i + 1} {entries[i]}")
     
     else: 
 
