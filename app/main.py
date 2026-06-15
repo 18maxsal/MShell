@@ -27,6 +27,8 @@ BUILT_INS = ["echo", "exit", "type", "pwd", "cd", "history"]
 HISTORY_FILE = ".mshell_history"
 current_history_file = HISTORY_FILE
 session = PromptSession(history=FileHistory(current_history_file))
+commands_this_session = []
+
 
 # try:
 #     readline.read_history_file(HISTORY_FILE)
@@ -99,6 +101,12 @@ def changeDirectoryHelper(command: list[str]) -> None:
 def getHistoryEntries() -> list[str]:
     return list(session.history.get_strings())
 
+
+def copySessionCommandsToHistory(history_backend: FileHistory) -> None:
+    for cmd in commands_this_session:
+        if cmd.strip():
+            history_backend.append_string(cmd)
+
     
 def historyHelper(command: list[str]) -> None:
 
@@ -114,11 +122,22 @@ def historyHelper(command: list[str]) -> None:
         if command[1] == "-r":
             global session
             global current_history_file
+
+            if len(command) < 3:
+                print("history: missing file path")
+                return
+
             path_to_history_file = os.path.expanduser(command[2])
             history_parent = os.path.dirname(path_to_history_file)
             if history_parent:
                 os.makedirs(history_parent, exist_ok = True)
             current_history_file = path_to_history_file
+
+            # session = PromptSession(history=FileHistory(current_history_file))
+            new_history = FileHistory(current_history_file)
+            session = PromptSession(history=new_history)
+
+
             session = PromptSession(history=FileHistory(current_history_file))
 
 
@@ -130,7 +149,7 @@ def historyHelper(command: list[str]) -> None:
         else:
             try: 
                 from_history = int(command[1])
-            except ValueError as VE:
+            except ValueError:
                 return
             entries = getHistoryEntries()
             start = max(len(entries) - from_history, 0)
@@ -148,7 +167,9 @@ def main():
         # sys.stdout.flush()
         # sys.stdout.write("$ ") # Used instead of print because this way does not include a newline
         # command = input("$ ")
-        command = session.prompt("$ ")
+        command = session.prompt("$ ") # How the command gets written into the history
+        commands_this_session.append(command)
+        # print("commands this session: ", commands_this_session)
         command = command.split(" ")
         # print(len(command))
         # print(command)
