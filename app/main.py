@@ -112,11 +112,16 @@ def historyHelper(command: list[str]) -> None:
 
 
     if len(command) == 1:
-        entries = getHistoryEntries()
-        # print("Entries: ", entries)
-        for i in range(len(entries)):
-            print(f"    {i + 1} {entries[i]}")
-            # print("2")
+
+        for i in range(len(commands_this_session)):
+            print(f"    {i + 1} {commands_this_session[i]}")
+
+
+        # entries = getHistoryEntries()
+        # # print("Entries: ", entries)
+        # for i in range(len(entries)):
+        #     print(f"    {i + 1} {entries[i]}")
+        #     # print("2")
     
     else: 
 
