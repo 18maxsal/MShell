@@ -109,6 +109,7 @@ def copySessionCommandsToHistory(history_backend: FileHistory) -> None:
 
     
 def historyHelper(command: list[str]) -> None:
+    global commands_this_session
 
 
     if len(command) == 1:
@@ -129,7 +130,6 @@ def historyHelper(command: list[str]) -> None:
         if command[1] == "-r":
             global session
             global current_history_file
-            global commands_this_session
 
             if len(command) < 3:
                 print("history: missing file path")
