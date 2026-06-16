@@ -177,6 +177,9 @@ def historyHelper(command: list[str]) -> None:
             except ValueError:
                 return
             entries = getHistoryEntries()
+            if from_history == "2":
+                # print(commands_this_session)
+                print(entries)
             start = max(len(entries) - from_history, 0)
             for i in range(start, len(entries)):
                 print(f"   {i + 1} {entries[i]}")
@@ -208,24 +211,38 @@ def main():
             break
         elif command[0] == "echo":
             echoHelper(command = command)
-
+            # history.append(to_add_history_command)
+            # commands_this_session.append(command_to_add_history)
+            
         elif command[0] == "type":
             typeHeler(command = command)
-
+            # history.append(to_add_history_command)
+            # commands_this_session.append(command_to_add_history)
+        
         elif command[0] == "pwd":
             pwdHelper()
+            # history.append(to_add_history_command)
+            # commands_this_session.append(command_to_add_history)
         
         elif command[0] == "cd":
             changeDirectoryHelper(command = command)
+            # history.append(to_add_history_command)
+            # commands_this_session.append(command_to_add_history)
         
         elif command[0] == "history":
+            # history.append(to_add_history_command)
             historyHelper(command = command)
+            # commands_this_session.append(command_to_add_history)
         
         else:
+            # command.insert(0, "type") # TEMP
+            # typeHeler(command = command) # TEMP
             if not externalCommandRunnerHelper(command = command):
                 print(f"{command[0]}: command not found")
             else:
                 pass
+                # history.append(to_add_history_command)
+            # commands_this_session.append(command_to_add_history)
         sys.stdout.flush()
 
 if __name__ == "__main__":
