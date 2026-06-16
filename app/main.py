@@ -188,7 +188,7 @@ def main():
         # command = input("$ ")
         command = session.prompt("$ ") # How the command gets written into the history
         command_to_add_history = command
-        # commands_this_session.append(command)
+        commands_this_session.append(command)
         # print("commands this session: ", commands_this_session)
         command = command.split(" ")
         # print(len(command))
