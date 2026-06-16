@@ -177,6 +177,7 @@ def historyHelper(command: list[str]) -> None:
             except ValueError:
                 return
             entries = getHistoryEntries()
+            print(from_history)
             if from_history == "2":
                 # print(commands_this_session)
                 print(entries)
