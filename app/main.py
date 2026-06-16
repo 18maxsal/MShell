@@ -129,18 +129,21 @@ def historyHelper(command: list[str]) -> None:
         if command[1] == "-r":
             global session
             global current_history_file
+            global commands_this_session
 
             if len(command) < 3:
                 print("history: missing file path")
                 return
             
             with open(command[2], "r", encoding="utf-8") as file:
-
                 # commands_from_other_file = file.readlines()
                 commands_from_other_file = []
                 for line in file:
                     commands_from_other_file.append(line.strip())
-                print(commands_from_other_file)
+                # print(commands_from_other_file)
+                for command in commands_from_other_file:
+                    commands_this_session.append(command)
+            file.close()
 
             path_to_history_file = os.path.expanduser(command[2])
             history_parent = os.path.dirname(path_to_history_file)
