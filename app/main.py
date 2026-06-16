@@ -107,6 +107,13 @@ def copySessionCommandsToHistory(history_backend: FileHistory) -> None:
         if cmd.strip():
             history_backend.append_string(cmd)
 
+
+def appendHistoryFileToDefaultHistory(source_history_file: str) -> None:
+    source_history = FileHistory(source_history_file)
+    for cmd in source_history.get_strings():
+        if cmd.strip():
+            session.history.append_string(cmd)
+
     
 def historyHelper(command: list[str]) -> None:
     global commands_this_session
@@ -201,38 +208,24 @@ def main():
             break
         elif command[0] == "echo":
             echoHelper(command = command)
-            # history.append(to_add_history_command)
-            # commands_this_session.append(command_to_add_history)
-            
+
         elif command[0] == "type":
             typeHeler(command = command)
-            # history.append(to_add_history_command)
-            # commands_this_session.append(command_to_add_history)
-        
+
         elif command[0] == "pwd":
             pwdHelper()
-            # history.append(to_add_history_command)
-            # commands_this_session.append(command_to_add_history)
         
         elif command[0] == "cd":
             changeDirectoryHelper(command = command)
-            # history.append(to_add_history_command)
-            # commands_this_session.append(command_to_add_history)
         
         elif command[0] == "history":
-            # history.append(to_add_history_command)
             historyHelper(command = command)
-            # commands_this_session.append(command_to_add_history)
         
         else:
-            # command.insert(0, "type") # TEMP
-            # typeHeler(command = command) # TEMP
             if not externalCommandRunnerHelper(command = command):
                 print(f"{command[0]}: command not found")
             else:
                 pass
-                # history.append(to_add_history_command)
-            # commands_this_session.append(command_to_add_history)
         sys.stdout.flush()
 
 if __name__ == "__main__":
