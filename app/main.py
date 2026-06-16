@@ -135,7 +135,11 @@ def historyHelper(command: list[str]) -> None:
                 return
             
             with open(command[2], "r", encoding="utf-8") as file:
-                commands_from_other_file = file.readlines()
+
+                # commands_from_other_file = file.readlines()
+                commands_from_other_file = []
+                for line in file:
+                    commands_from_other_file.append(line.strip())
                 print(commands_from_other_file)
 
             path_to_history_file = os.path.expanduser(command[2])
