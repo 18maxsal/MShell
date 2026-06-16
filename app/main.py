@@ -187,8 +187,8 @@ def main():
         # sys.stdout.write("$ ") # Used instead of print because this way does not include a newline
         # command = input("$ ")
         command = session.prompt("$ ") # How the command gets written into the history
-        # commands_this_session.append(command)
         command_to_add_history = command
+        # commands_this_session.append(command)
         # print("commands this session: ", commands_this_session)
         command = command.split(" ")
         # print(len(command))
@@ -202,27 +202,27 @@ def main():
         elif command[0] == "echo":
             echoHelper(command = command)
             # history.append(to_add_history_command)
-            commands_this_session.append(command_to_add_history)
+            # commands_this_session.append(command_to_add_history)
             
         elif command[0] == "type":
             typeHeler(command = command)
             # history.append(to_add_history_command)
-            commands_this_session.append(command_to_add_history)
+            # commands_this_session.append(command_to_add_history)
         
         elif command[0] == "pwd":
             pwdHelper()
             # history.append(to_add_history_command)
-            commands_this_session.append(command_to_add_history)
+            # commands_this_session.append(command_to_add_history)
         
         elif command[0] == "cd":
             changeDirectoryHelper(command = command)
             # history.append(to_add_history_command)
-            commands_this_session.append(command_to_add_history)
+            # commands_this_session.append(command_to_add_history)
         
         elif command[0] == "history":
             # history.append(to_add_history_command)
             historyHelper(command = command)
-            commands_this_session.append(command_to_add_history)
+            # commands_this_session.append(command_to_add_history)
         
         else:
             # command.insert(0, "type") # TEMP
@@ -232,7 +232,7 @@ def main():
             else:
                 pass
                 # history.append(to_add_history_command)
-            commands_this_session.append(command_to_add_history)
+            # commands_this_session.append(command_to_add_history)
         sys.stdout.flush()
 
 if __name__ == "__main__":
