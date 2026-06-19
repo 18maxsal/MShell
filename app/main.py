@@ -5,6 +5,7 @@ from pathlib import Path
 
 from prompt_toolkit import PromptSession
 from prompt_toolkit.history import FileHistory
+from prompt_toolkit.history import InMemoryHistory
 
 # Ensuring program works regardless of OS that user is running
 # if sys.platform != "win32":
@@ -25,9 +26,22 @@ BUILT_INS = ["echo", "exit", "type", "pwd", "cd", "history"]
 # history_file = str(PROJECT_ROOT) + "/.mshell_history" 
 # history_file = str(PROJECT_ROOT) + "/.mshell_history"
 HISTORY_FILE = ".mshell_history"
-current_history_file = HISTORY_FILE
-session = PromptSession(history=FileHistory(current_history_file))
-commands_this_session = []
+commands_this_session: list[str] = []
+# current_history_file = HISTORY_FILE
+# session = PromptSession(history=FileHistory(current_history_file))
+session = PromptSession(history=InMemoryHistory())
+
+def load_history() -> list[str]:
+    try:
+        with HISTORY_FILE.open("r", encoding = "utf-8") as file:
+            return [line.rstrip("\n") for line in file if line.strip()]
+    except FileNotFoundError:
+        return []
+
+def save_history() -> None:
+    with HISTORY_FILE.open("w", encoding = "utf-8") as file:
+        for cmd in commands_this_session:
+            file.write(cmd + "\n")
 
 
 # try:
@@ -114,12 +128,46 @@ def appendHistoryFileToDefaultHistory(source_history_file: str) -> None:
         if cmd.strip():
             session.history.append_string(cmd)
 
+# TESTING OUT
+def unique_history_navigator_helper(history: list[str]) -> list[str]:
+    seen = set()
+    to_return = []
+
+    for cmd in reversed(history):
+        if cmd not in seen:
+            seen.add(cmd)
+            to_return.append(cmd)
     
-def historyHelper(command: list[str]) -> None:
+    return list(reversed(to_return))
+
+# TESTING OUT
+def rebuild_prompt_memory() -> None:
+    navigator_history = unique_history_navigator_helper(commands_this_session)
+
+    new_history = InMemoryHistory()
+
+    for cmd in navigator_history:
+        new_history.append_string(cmd)
+    
+    session.history = new_history
+
+def add_command_to_history(cmd: str) -> None:
+    cmd = cmd.strip()
+
+    if not cmd:
+        return
+    
+    commands_this_session.append(cmd)
+    save_history()
+    rebuild_prompt_memory()
+
+
+    
+def historyHelper(args: list[str]) -> None:
     global commands_this_session
 
 
-    if len(command) == 1:
+    if len(args) == 1:
 
         for i in range(len(commands_this_session)):
             print(f"    {i + 1} {commands_this_session[i]}")
@@ -134,56 +182,73 @@ def historyHelper(command: list[str]) -> None:
     else: 
 
         # READING FROM A FILE [NOTE: NOT DONE TODO]
-        if command[1] == "-r":
+        if args[1] == "-r":
             global session
             global current_history_file
 
-            if len(command) < 3:
+            if len(args) < 3:
                 print("history: missing file path")
                 return
             
-            with open(command[2], "r", encoding="utf-8") as file:
-                # commands_from_other_file = file.readlines()
-                commands_from_other_file = []
-                for line in file:
-                    commands_from_other_file.append(line.strip())
-                # print(commands_from_other_file)
-                for command in commands_from_other_file:
-                    commands_this_session.append(command)
-            file.close()
+            path = Path(args[2]).expanduser()
+            try:
+                with path.open("r", encoding="utf-8") as file:
+                    for line in file:
+                        cmd = line.rstrip("\n")
+                        if cmd.strip():
+                            commands_this_session.append(cmd)
+                save_history()
+                rebuild_prompt_memory()
+            except FileNotFoundError:
+                print(f"history: {path}: file not found")
+            return
+            
+            ###### BLOCKING OUT FOR TESTING ######
+            # with open(args[2], "r", encoding="utf-8") as file:
+            #     # commands_from_other_file = file.readlines()
+            #     commands_from_other_file = []
+            #     for line in file:
+            #         commands_from_other_file.append(line.strip())
+            #     # print(commands_from_other_file)
+            #     for command in commands_from_other_file:
+            #         commands_this_session.append(command)
+            # file.close()
 
-            path_to_history_file = os.path.expanduser(command[2])
-            history_parent = os.path.dirname(path_to_history_file)
-            if history_parent:
-                os.makedirs(history_parent, exist_ok = True)
-            current_history_file = path_to_history_file
+            # path_to_history_file = os.path.expanduser(args[2])
+            # history_parent = os.path.dirname(path_to_history_file)
+            # if history_parent:
+            #     os.makedirs(history_parent, exist_ok = True)
+            # current_history_file = path_to_history_file
+
+            # # session = PromptSession(history=FileHistory(current_history_file))
+            # new_history = FileHistory(current_history_file)
+            # session = PromptSession(history=new_history)
+
 
             # session = PromptSession(history=FileHistory(current_history_file))
-            new_history = FileHistory(current_history_file)
-            session = PromptSession(history=new_history)
 
 
-            session = PromptSession(history=FileHistory(current_history_file))
-
-
-            # global session 
-            # path_to_history_file = command[2]
-            # session = PromptSession(history=FileHistory(path_to_history_file))
-
+            # # global session 
+            # # path_to_history_file = command[2]
+            # # session = PromptSession(history=FileHistory(path_to_history_file))
+            ###### ENDING TEST BLOCK ######
 
         else:
             try: 
-                from_history = int(command[1])
+                from_history = int(args[1])
             except ValueError:
                 return
-            entries = getHistoryEntries()
+            # entries = getHistoryEntries()
             # print(from_history)
-            if from_history == 2:
+            # if from_history == 2:
                 # print(commands_this_session)
-                print(entries)
-            start = max(len(entries) - from_history, 0)
-            for i in range(start, len(entries)):
-                print(f"   {i + 1} {entries[i]}")
+                # print(entries)
+            # start = max(len(entries) - from_history, 0)
+            start = max(len(commands_this_session) - from_history, 0)
+            for i in range(start, len(commands_this_session)):
+                print(f"   {i + 1} {commands_this_session[i]}")
+            # for i in range(start, len(entries)):
+            #     print(f"   {i + 1} {entries[i]}")
 
 
 
@@ -198,10 +263,19 @@ def main():
         # sys.stdout.write("$ ") # Used instead of print because this way does not include a newline
         # command = input("$ ")
         command = session.prompt("$ ") # How the command gets written into the history
-        command_to_add_history = command
-        commands_this_session.append(command)
+
+        # TESTING OUT
+        if command.strip():
+            add_command_to_history(command)
+            # commands_this_session.append(command)
+            # rebuild_prompt_memory(session, commands_this_session)
+        
+
+        # command_to_add_history = command
+        # commands_this_session.append(command)
         # print("commands this session: ", commands_this_session)
-        command = command.split(" ")
+        # command = command.split(" ")
+        command = command.split()
         # print(len(command))
         # print(command)
         
@@ -232,7 +306,7 @@ def main():
         
         elif command[0] == "history":
             # history.append(to_add_history_command)
-            historyHelper(command = command)
+            historyHelper(args = command)
             # commands_this_session.append(command_to_add_history)
         
         else:
@@ -247,4 +321,6 @@ def main():
         sys.stdout.flush()
 
 if __name__ == "__main__":
+    commands_this_session = load_history()
+    rebuild_prompt_memory()
     main()
