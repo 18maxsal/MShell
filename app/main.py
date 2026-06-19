@@ -248,6 +248,8 @@ def historyHelper(args: list[str]) -> None:
                 # print(entries)
             # start = max(len(entries) - from_history, 0)
             unique_history = unique_history_navigator_helper(history = commands_this_session)
+            if from_history == 2:
+                print(unique_history)
             # start = max(len(commands_this_session) - from_history, 0)
             start = max(len(unique_history) - from_history, 0)
             for i in range(start, len(unique_history)):
