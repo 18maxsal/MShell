@@ -239,6 +239,8 @@ def historyHelper(args: list[str]) -> None:
                 from_history = int(args[1])
             except ValueError:
                 return
+            if from_history == 2:
+                print(session.history)
             # entries = getHistoryEntries()
             # print(from_history)
             # if from_history == 2:
