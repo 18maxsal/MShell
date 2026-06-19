@@ -25,7 +25,8 @@ BUILT_INS = ["echo", "exit", "type", "pwd", "cd", "history"]
 # history_file =  os.path.expanduser("~/.mshell_history")
 # history_file = str(PROJECT_ROOT) + "/.mshell_history" 
 # history_file = str(PROJECT_ROOT) + "/.mshell_history"
-HISTORY_FILE = ".mshell_history"
+# HISTORY_FILE = ".mshell_history"
+HISTORY_FILE = Path(".mshell_history")
 commands_this_session: list[str] = []
 # current_history_file = HISTORY_FILE
 # session = PromptSession(history=FileHistory(current_history_file))
