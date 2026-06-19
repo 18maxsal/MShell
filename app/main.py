@@ -185,7 +185,7 @@ def historyHelper(args: list[str]) -> None:
         # READING FROM A FILE [NOTE: NOT DONE TODO]
         if args[1] == "-r":
             global session
-            global current_history_file
+            # global current_history_file
 
             if len(args) < 3:
                 print("history: missing file path")
@@ -247,15 +247,15 @@ def historyHelper(args: list[str]) -> None:
                 # print(commands_this_session)
                 # print(entries)
             # start = max(len(entries) - from_history, 0)
-            unique_history = unique_history_navigator_helper(history = commands_this_session)
-            if from_history == 2:
-                print(unique_history)
-            # start = max(len(commands_this_session) - from_history, 0)
-            start = max(len(unique_history) - from_history, 0)
-            for i in range(start, len(unique_history)):
-                print(f"   {i + 1} {unique_history[i]}")
-            # for i in range(start, len(commands_this_session)):
-            #     print(f"   {i + 1} {commands_this_session[i]}")
+            # unique_history = unique_history_navigator_helper(history = commands_this_session)
+            # if from_history == 2:
+            #     print(unique_history)
+            start = max(len(commands_this_session) - from_history, 0)
+            # start = max(len(unique_history) - from_history, 0)
+            # for i in range(start, len(unique_history)):
+                # print(f"   {i + 1} {unique_history[i]}")
+            for i in range(start, len(commands_this_session)):
+                print(f"   {i + 1} {commands_this_session[i]}")
             # for i in range(start, len(entries)):
             #     print(f"   {i + 1} {entries[i]}")
 
@@ -287,9 +287,10 @@ def main():
         command = command.split()
         # print(len(command))
         # print(command)
-        
-        if len(command) == 1 and command[0] == '':
+        if not command:
             continue
+        # if len(command) == 1 and command[0] == '':
+        #     continue
 
         if command[0] == "exit":
             break
@@ -330,6 +331,7 @@ def main():
         sys.stdout.flush()
 
 if __name__ == "__main__":
-    commands_this_session = load_history()
+    # commands_this_session = load_history()
+    commands_this_session = []
     rebuild_prompt_memory()
     main()
