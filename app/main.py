@@ -240,7 +240,7 @@ def historyHelper(args: list[str]) -> None:
             except ValueError:
                 return
             if from_history == 2:
-                print(session.history)
+                print(session.history.get_strings())
             # entries = getHistoryEntries()
             # print(from_history)
             # if from_history == 2:
