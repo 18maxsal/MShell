@@ -162,7 +162,7 @@ def historyHelper(args: list[str]) -> None:
             try:
                 with path.open("w", encoding="utf-8") as file:
                     for cmd in commands_this_session:
-                        file.write(cmd)
+                        file.write(cmd + "\n")
                 file.close()
             except FileNotFoundError:
                 print(f"history: {path}: file not found")
