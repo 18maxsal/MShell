@@ -23,12 +23,6 @@ def save_history() -> None:
         for cmd in commands_this_session:
             file.write(cmd + "\n")
 
-
-# try:
-#     readline.read_history_file(HISTORY_FILE)
-# except FileNotFoundError:
-#     pass
-
 def echoHelper(command: list[str]) -> None:
     to_print = ""
     if len(command) > 1:
@@ -91,22 +85,6 @@ def changeDirectoryHelper(command: list[str]) -> None:
     else:
         print(f"cd: {path}: No such file or directory")
 
-
-# def getHistoryEntries() -> list[str]:
-#     return list(session.history.get_strings())
-
-
-# def copySessionCommandsToHistory(history_backend: FileHistory) -> None:
-#     for cmd in commands_this_session:
-#         if cmd.strip():
-#             history_backend.append_string(cmd)
-
-
-# def appendHistoryFileToDefaultHistory(source_history_file: str) -> None:
-#     source_history = FileHistory(source_history_file)
-#     for cmd in source_history.get_strings():
-#         if cmd.strip():
-#             session.history.append_string(cmd)
 
 # TODO: Look over
 def unique_history_navigator_helper(history: list[str]) -> list[str]:
