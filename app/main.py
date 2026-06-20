@@ -2,34 +2,13 @@ import sys
 import os
 import subprocess
 from pathlib import Path
-
 from prompt_toolkit import PromptSession
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.history import InMemoryHistory
 
-# Ensuring program works regardless of OS that user is running
-# if sys.platform != "win32":
-#     import readline
-# else:
-#     from prompt_toolkit import PromptSession
-#     from prompt_toolkit.history import FileHistory
-
-# print(sys.platform)
-# try: 
-#     import readline
-# except ImportError:
-#     import pyreadline3 as readline
-
 BUILT_INS = ["echo", "exit", "type", "pwd", "cd", "history"]
-# PROJECT_ROOT = Path(__file__).resolve().parent.parent
-# history_file =  os.path.expanduser("~/.mshell_history")
-# history_file = str(PROJECT_ROOT) + "/.mshell_history" 
-# history_file = str(PROJECT_ROOT) + "/.mshell_history"
-# HISTORY_FILE = ".mshell_history"
 HISTORY_FILE = Path(".mshell_history")
 commands_this_session: list[str] = []
-# current_history_file = HISTORY_FILE
-# session = PromptSession(history=FileHistory(current_history_file))
 session = PromptSession(history=InMemoryHistory())
 
 def load_history() -> list[str]:
@@ -113,23 +92,23 @@ def changeDirectoryHelper(command: list[str]) -> None:
         print(f"cd: {path}: No such file or directory")
 
 
-def getHistoryEntries() -> list[str]:
-    return list(session.history.get_strings())
+# def getHistoryEntries() -> list[str]:
+#     return list(session.history.get_strings())
 
 
-def copySessionCommandsToHistory(history_backend: FileHistory) -> None:
-    for cmd in commands_this_session:
-        if cmd.strip():
-            history_backend.append_string(cmd)
+# def copySessionCommandsToHistory(history_backend: FileHistory) -> None:
+#     for cmd in commands_this_session:
+#         if cmd.strip():
+#             history_backend.append_string(cmd)
 
 
-def appendHistoryFileToDefaultHistory(source_history_file: str) -> None:
-    source_history = FileHistory(source_history_file)
-    for cmd in source_history.get_strings():
-        if cmd.strip():
-            session.history.append_string(cmd)
+# def appendHistoryFileToDefaultHistory(source_history_file: str) -> None:
+#     source_history = FileHistory(source_history_file)
+#     for cmd in source_history.get_strings():
+#         if cmd.strip():
+#             session.history.append_string(cmd)
 
-# TESTING OUT
+# TODO: Look over
 def unique_history_navigator_helper(history: list[str]) -> list[str]:
     seen = set()
     to_return = []
@@ -141,7 +120,7 @@ def unique_history_navigator_helper(history: list[str]) -> list[str]:
     
     return list(reversed(to_return))
 
-# TESTING OUT
+# TODO: Look over
 def rebuild_prompt_memory() -> None:
     navigator_history = unique_history_navigator_helper(commands_this_session)
 
@@ -165,27 +144,22 @@ def add_command_to_history(cmd: str) -> None:
 
     
 def historyHelper(args: list[str]) -> None:
+    """Handles the logic for the history built-in and all its sub-commands"""
     global commands_this_session
 
-
+    # Case: printing the entire history (i.e. handling just "history") 
     if len(args) == 1:
 
         for i in range(len(commands_this_session)):
             print(f"    {i + 1} {commands_this_session[i]}")
 
 
-        # entries = getHistoryEntries()
-        # # print("Entries: ", entries)
-        # for i in range(len(entries)):
-        #     print(f"    {i + 1} {entries[i]}")
-        #     # print("2")
-    
     else: 
 
-        # READING FROM A FILE [NOTE: NOT DONE TODO]
+        # Case: reading from a file and adding it's commands to history
+        # (i.e. handling "history -r <path-to-file>")
         if args[1] == "-r":
             global session
-            # global current_history_file
 
             if len(args) < 3:
                 print("history: missing file path")
@@ -203,7 +177,9 @@ def historyHelper(args: list[str]) -> None:
             except FileNotFoundError:
                 print(f"history: {path}: file not found")
             return
-            
+
+        # Case: Printing out limiting history
+        # (i.e. handling "history <number>")            
         else:
             try: 
                 from_history = int(args[1])
