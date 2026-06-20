@@ -221,61 +221,35 @@ def main():
         # command = input("$ ")
         command = session.prompt("$ ") # How the command gets written into the history
 
-        # TESTING OUT
         if command.strip():
             add_command_to_history(command)
-            # commands_this_session.append(command)
-            # rebuild_prompt_memory(session, commands_this_session)
         
-
-        # command_to_add_history = command
-        # commands_this_session.append(command)
-        # print("commands this session: ", commands_this_session)
-        # command = command.split(" ")
         command = command.split()
-        # print(len(command))
-        # print(command)
         if not command:
             continue
-        # if len(command) == 1 and command[0] == '':
-        #     continue
 
         if command[0] == "exit":
             break
         elif command[0] == "echo":
             echoHelper(command = command)
-            # history.append(to_add_history_command)
-            # commands_this_session.append(command_to_add_history)
             
         elif command[0] == "type":
             typeHeler(command = command)
-            # history.append(to_add_history_command)
-            # commands_this_session.append(command_to_add_history)
         
         elif command[0] == "pwd":
             pwdHelper()
-            # history.append(to_add_history_command)
-            # commands_this_session.append(command_to_add_history)
         
         elif command[0] == "cd":
             changeDirectoryHelper(command = command)
-            # history.append(to_add_history_command)
-            # commands_this_session.append(command_to_add_history)
         
         elif command[0] == "history":
-            # history.append(to_add_history_command)
             historyHelper(args = command)
-            # commands_this_session.append(command_to_add_history)
         
         else:
-            # command.insert(0, "type") # TEMP
-            # typeHeler(command = command) # TEMP
             if not externalCommandRunnerHelper(command = command):
                 print(f"{command[0]}: command not found")
             else:
                 pass
-                # history.append(to_add_history_command)
-            # commands_this_session.append(command_to_add_history)
         sys.stdout.flush()
 
 if __name__ == "__main__":
