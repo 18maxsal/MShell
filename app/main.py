@@ -209,31 +209,9 @@ def historyHelper(args: list[str]) -> None:
                 from_history = int(args[1])
             except ValueError:
                 return
-            # if from_history == 2:
-            #     print(session.history.get_strings())
-            # entries = getHistoryEntries()
-            # print(from_history)
-            # if from_history == 2:
-                # print(commands_this_session)
-                # print(entries)
-            # start = max(len(entries) - from_history, 0)
-            # unique_history = unique_history_navigator_helper(history = commands_this_session)
-            # if from_history == 2:
-            #     print(unique_history)
             start = max(len(commands_this_session) - from_history, 0)
-            # start = max(len(unique_history) - from_history, 0)
-            # for i in range(start, len(unique_history)):
-                # print(f"   {i + 1} {unique_history[i]}")
             for i in range(start, len(commands_this_session)):
                 print(f"   {i + 1} {commands_this_session[i]}")
-            # for i in range(start, len(entries)):
-            #     print(f"   {i + 1} {entries[i]}")
-
-
-
-            # from_history = int(command[1])
-            # for i in range(len(history) - from_history, len(history)):
-            #     print(f"   {i} {history[i]}")
 
 def main():
     while True:
