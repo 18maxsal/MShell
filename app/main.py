@@ -204,36 +204,6 @@ def historyHelper(args: list[str]) -> None:
                 print(f"history: {path}: file not found")
             return
             
-            ###### BLOCKING OUT FOR TESTING ######
-            # with open(args[2], "r", encoding="utf-8") as file:
-            #     # commands_from_other_file = file.readlines()
-            #     commands_from_other_file = []
-            #     for line in file:
-            #         commands_from_other_file.append(line.strip())
-            #     # print(commands_from_other_file)
-            #     for command in commands_from_other_file:
-            #         commands_this_session.append(command)
-            # file.close()
-
-            # path_to_history_file = os.path.expanduser(args[2])
-            # history_parent = os.path.dirname(path_to_history_file)
-            # if history_parent:
-            #     os.makedirs(history_parent, exist_ok = True)
-            # current_history_file = path_to_history_file
-
-            # # session = PromptSession(history=FileHistory(current_history_file))
-            # new_history = FileHistory(current_history_file)
-            # session = PromptSession(history=new_history)
-
-
-            # session = PromptSession(history=FileHistory(current_history_file))
-
-
-            # # global session 
-            # # path_to_history_file = command[2]
-            # # session = PromptSession(history=FileHistory(path_to_history_file))
-            ###### ENDING TEST BLOCK ######
-
         else:
             try: 
                 from_history = int(args[1])
