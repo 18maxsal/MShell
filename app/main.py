@@ -152,9 +152,21 @@ def historyHelper(args: list[str]) -> None:
                             commands_this_session.append(cmd)
                 save_history()
                 rebuild_prompt_memory()
+                file.close()
             except FileNotFoundError:
                 print(f"history: {path}: file not found")
             return
+        
+        elif args[1] == "-w":
+            path = Path(args[2]).expanduser()
+            try:
+                with path.open("w", encoding="utf-8") as file:
+                    for cmd in commands_this_session:
+                        file.write(cmd)
+                file.close()
+            except FileNotFoundError:
+                print(f"history: {path}: file not found")
+                return
 
         # Case: Printing out limiting history
         # (i.e. handling "history <number>")            
