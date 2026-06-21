@@ -7,7 +7,10 @@ from prompt_toolkit.history import FileHistory
 from prompt_toolkit.history import InMemoryHistory
 
 BUILT_INS = ["echo", "exit", "type", "pwd", "cd", "history"]
-HISTORY_FILE = Path(".mshell_history")
+if os.environ.get("HISTFILE"):
+        HISTFILE = os.environ.get("HISTFILE")
+else:
+    HISTFILE = Path(".mshell_history")
 commands_this_session: list[str] = []
 session = PromptSession(history=InMemoryHistory())
 history_append_start_pointer = 0
@@ -15,13 +18,13 @@ history_append_start_pointer = 0
 
 def load_history() -> list[str]:
     try:
-        with HISTORY_FILE.open("r", encoding = "utf-8") as file:
+        with HISTFILE.open("r", encoding = "utf-8") as file:
             return [line.rstrip("\n") for line in file if line.strip()]
     except FileNotFoundError:
         return []
 
 def save_history() -> None:
-    with HISTORY_FILE.open("w", encoding = "utf-8") as file:
+    with HISTFILE.open("w", encoding = "utf-8") as file:
         for cmd in commands_this_session:
             file.write(cmd + "\n")
 
@@ -179,7 +182,6 @@ def historyHelper(args: list[str]) -> None:
                 with path.open("a", encoding="utf-8") as file:
                     for index in range(history_append_start_pointer, len(commands_this_session)):
                         file.write(commands_this_session[index] + "\n")
-                # history_append_start_pointer = len(commands_this_session) + 1
                 history_append_start_pointer = len(commands_this_session)
                 file.close()
             except FileNotFoundError:
@@ -238,6 +240,8 @@ def main():
 
 if __name__ == "__main__":
     # commands_this_session = load_history()
+    # if os.environ.get("HISTFILE"):
+    #     pass
     commands_this_session = []
     rebuild_prompt_memory()
     main()
