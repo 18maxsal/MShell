@@ -10,6 +10,8 @@ BUILT_INS = ["echo", "exit", "type", "pwd", "cd", "history"]
 HISTORY_FILE = Path(".mshell_history")
 commands_this_session: list[str] = []
 session = PromptSession(history=InMemoryHistory())
+history_append_start_pointer = 0
+
 
 def load_history() -> list[str]:
     try:
@@ -157,6 +159,7 @@ def historyHelper(args: list[str]) -> None:
                 print(f"history: {path}: file not found")
             return
         
+        # Case: Writing our history to a file
         elif args[1] == "-w":
             path = Path(args[2]).expanduser()
             try:
@@ -164,6 +167,16 @@ def historyHelper(args: list[str]) -> None:
                     for cmd in commands_this_session:
                         file.write(cmd + "\n")
                 file.close()
+            except FileNotFoundError:
+                print(f"history: {path}: file not found")
+                return
+        
+        # Case: Appending commands from history to a file 
+        elif args[1] == "-a":
+            global history_append_start_pointer
+            path = Path(args[2]).expanduser()
+            try:
+                pass
             except FileNotFoundError:
                 print(f"history: {path}: file not found")
                 return
