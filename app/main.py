@@ -8,7 +8,7 @@ from prompt_toolkit.history import InMemoryHistory
 
 BUILT_INS = ["echo", "exit", "type", "pwd", "cd", "history"]
 if os.environ.get("HISTFILE"):
-        HISTFILE = os.environ.get("HISTFILE")
+        HISTFILE = Path(os.environ.get("HISTFILE"))
 else:
     HISTFILE = Path(".mshell_history")
 commands_this_session: list[str] = []
