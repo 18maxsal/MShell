@@ -176,7 +176,11 @@ def historyHelper(args: list[str]) -> None:
             global history_append_start_pointer
             path = Path(args[2]).expanduser()
             try:
-                pass
+                with path.open("a", encoding="utf-8") as file:
+                    for index in range(history_append_start_pointer, len(commands_this_session)):
+                        file.write(commands_this_session[index] + "\n")
+                history_append_start_pointer = len(commands_this_session) + 1
+                file.close()
             except FileNotFoundError:
                 print(f"history: {path}: file not found")
                 return
