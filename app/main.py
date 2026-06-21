@@ -179,7 +179,8 @@ def historyHelper(args: list[str]) -> None:
                 with path.open("a", encoding="utf-8") as file:
                     for index in range(history_append_start_pointer, len(commands_this_session)):
                         file.write(commands_this_session[index] + "\n")
-                history_append_start_pointer = len(commands_this_session) + 1
+                # history_append_start_pointer = len(commands_this_session) + 1
+                history_append_start_pointer = len(commands_this_session)
                 file.close()
             except FileNotFoundError:
                 print(f"history: {path}: file not found")
