@@ -202,14 +202,15 @@ def historyHelper(args: list[str]) -> None:
                 print(f"   {i + 1} {commands_this_session[i]}")
 
 def main():
+    global commands_this_session
     if os.environ.get("HISTFILE"):
-        global HISTFILE, commands_this_session
+        global HISTFILE
         HISTFILE = Path(os.environ.get("HISTFILE"))
         commands_this_session = load_history()
 
 
     while True:
-        global commands_this_session
+        # global commands_this_session
         # sys.stdout.flush()
         # sys.stdout.write("$ ") # Used instead of print because this way does not include a newline
         # command = input("$ ")
