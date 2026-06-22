@@ -203,9 +203,9 @@ def historyHelper(args: list[str]) -> None:
 
 def main():
     if os.environ.get("HISTFILE"):
-        global HISTFILE
+        global HISTFILE, commands_this_session
         HISTFILE = Path(os.environ.get("HISTFILE"))
-        load_history()
+        commands_this_session = load_history()
 
 
     while True:
