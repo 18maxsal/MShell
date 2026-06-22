@@ -7,11 +7,12 @@ from prompt_toolkit.history import FileHistory
 from prompt_toolkit.history import InMemoryHistory
 
 BUILT_INS = ["echo", "exit", "type", "pwd", "cd", "history"]
-if os.environ.get("HISTFILE"):
-        HISTFILE = Path(os.environ.get("HISTFILE"))
-        load_history()
-else:
-    HISTFILE = Path(".mshell_history")
+HISTFILE = Path(".mshell_history")
+# if os.environ.get("HISTFILE"):
+#         HISTFILE = Path(os.environ.get("HISTFILE"))
+#         load_history()
+# else:
+#     HISTFILE = Path(".mshell_history")
 commands_this_session: list[str] = []
 session = PromptSession(history=InMemoryHistory())
 history_append_start_pointer = 0
@@ -201,6 +202,12 @@ def historyHelper(args: list[str]) -> None:
                 print(f"   {i + 1} {commands_this_session[i]}")
 
 def main():
+    if os.environ.get("HISTFILE"):
+        global HISTFILE
+        HISTFILE = Path(os.environ.get("HISTFILE"))
+        load_history()
+
+
     while True:
         global commands_this_session
         # sys.stdout.flush()
