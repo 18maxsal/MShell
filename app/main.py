@@ -8,11 +8,6 @@ from prompt_toolkit.history import InMemoryHistory
 
 BUILT_INS = ["echo", "exit", "type", "pwd", "cd", "history"]
 HISTFILE = Path(".mshell_history")
-# if os.environ.get("HISTFILE"):
-#         HISTFILE = Path(os.environ.get("HISTFILE"))
-#         load_history()
-# else:
-#     HISTFILE = Path(".mshell_history")
 commands_this_session: list[str] = []
 session = PromptSession(history=InMemoryHistory())
 history_append_start_pointer = 0
@@ -210,7 +205,6 @@ def main():
 
 
     while True:
-        # global commands_this_session
         # sys.stdout.flush()
         # sys.stdout.write("$ ") # Used instead of print because this way does not include a newline
         # command = input("$ ")
@@ -248,9 +242,6 @@ def main():
         sys.stdout.flush()
 
 if __name__ == "__main__":
-    # commands_this_session = load_history()
-    # if os.environ.get("HISTFILE"):
-    #     pass
     commands_this_session = []
     rebuild_prompt_memory()
     main()
