@@ -21,7 +21,7 @@ def load_history() -> list[str]:
         return []
 
 def save_history() -> None:
-    with HISTFILE.open("a", encoding = "utf-8") as file:
+    with HISTFILE.open("w", encoding = "utf-8") as file:
         for cmd in commands_this_session:
             file.write(cmd + "\n")
 
