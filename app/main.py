@@ -118,10 +118,19 @@ def add_command_to_history(cmd: str) -> None:
         return
     
     commands_this_session.append(cmd)
-    save_history()
+    # save_history() # TEMP CHANGE
     rebuild_prompt_memory()
 
+# NOTE: TESTING OUT
+def append_new_history_to_file() -> None:
+    if HISTFILE.parent != Path("."):
+        HISTFILE.parent.mkdir(parents=True, exist_ok=True)
 
+    with HISTFILE.open("a", encoding="utf-8") as file:
+        for i in range(0, len(commands_this_session)):
+            file.write(commands_this_session[i] + "\n")
+    
+    
     
 def historyHelper(args: list[str]) -> None:
     """Handles the logic for the history built-in and all its sub-commands"""
@@ -198,10 +207,14 @@ def historyHelper(args: list[str]) -> None:
 
 def main():
     global commands_this_session
+    global HISTFILE
     if os.environ.get("HISTFILE"):
-        global HISTFILE
-        HISTFILE = Path(os.environ.get("HISTFILE"))
+        # global HISTFILE
+        # HISTFILE = Path(os.environ.get("HISTFILE"))
+        HISTFILE = Path(os.environ.get("HISTFILE")).expanduser()
         commands_this_session = load_history()
+        rebuild_prompt_memory()
+
 
 
     while True:
@@ -240,7 +253,8 @@ def main():
             else:
                 pass
         sys.stdout.flush()
-    save_history() # May not need
+    # save_history() # May not need
+    append_new_history_to_file()
 
 if __name__ == "__main__":
     commands_this_session = []
