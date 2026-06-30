@@ -272,6 +272,35 @@ def historyHelper(args: list[str]) -> None:
             for i in range(start, len(commands_this_session)):
                 print(f"   {i + 1} {commands_this_session[i]}")
 
+def string_parser(command: str) -> list[str]:
+    to_return = []
+    index = 0
+    command_length = len(command)
+    if command:
+        curr_word = ""
+        while index < command_length:
+            if command[index] == '\'':
+                curr_word = ""
+                index += 1
+                while index < command_length:
+                    if command[index] == '\'':
+                        to_return.append(curr_word)
+                        break
+                    curr_word += command[index]
+                    index += 1
+            elif command[index] == " ":
+                if curr_word:
+                    to_return.append(curr_word)
+                    curr_word = ""
+                    index += 1
+            else:
+                curr_word += command[index]
+                index += 1
+                    
+            
+
+    return []
+
 def main():
     """
     The main loop for the program
@@ -295,12 +324,16 @@ def main():
         # command = input("$ ")
         command = session.prompt("$ ") # How the command gets written into the history
 
-        if command.strip():
-            add_command_to_history(command)
+        # TESTING
+        command = string_parser(command)
+        add_command_to_history(command)
         
-        command = command.split()
-        if not command:
-            continue
+        # if command.strip():
+        #     add_command_to_history(command)
+        
+        # command = command.split()
+        # if not command:
+        #     continue
 
         if command[0] == "exit":
             break
