@@ -11,9 +11,14 @@ HISTFILE = Path(".mshell_history")
 commands_this_session: list[str] = []
 session = PromptSession(history=InMemoryHistory())
 history_append_start_pointer = 0
+history_loaded_start_pointer = 0
 
 
 def load_history() -> list[str]:
+    """
+    Loads the history from the given HISTFILE.  If no file is 
+    defined, returns an empty array instead.
+    """
     try:
         with HISTFILE.open("r", encoding = "utf-8") as file:
             return [line.rstrip("\n") for line in file if line.strip()]
@@ -21,17 +26,33 @@ def load_history() -> list[str]:
         return []
 
 def save_history() -> None:
+    """
+    Saves all the commands used this session to the designated
+    HISTFILE.
+    """
     with HISTFILE.open("w", encoding = "utf-8") as file:
         for cmd in commands_this_session:
             file.write(cmd + "\n")
 
 def echoHelper(command: list[str]) -> None:
+    """
+    Handles the logic for the 'echo' built-in.
+    Prints the given string to output.
+    """
     to_print = ""
     if len(command) > 1:
         to_print = " ".join(command[1:])
     print(to_print)
 
 def typeHeler(command: list[str]) -> None:
+    """
+    Handles the logic for the 'type' built-in.
+    Prints whether the given command is of type built-in, 
+    executable that exists, or if a command that does 
+    not exist 
+
+    Returns: None
+    """
     if command[1] and command[1] in BUILT_INS:
         print(f"{command[1]} is a shell builtin")
     else: # Command is not Built-in
@@ -49,6 +70,13 @@ def typeHeler(command: list[str]) -> None:
             print("not found")
 
 def externalCommandRunnerHelper(command: list[str]) -> bool:
+    """
+    Handles the logic for running non-built-in files/commands
+    if they exist.
+
+    Returns: True if the command was found, false otherwise
+       
+    """
     path = os.environ.get('PATH')
     path_list = path.split(os.pathsep)
     for i in range(len(path_list)):
@@ -68,9 +96,17 @@ def externalCommandRunnerHelper(command: list[str]) -> bool:
     return False
 
 def pwdHelper() -> None:
+    """Prints current working directory"""
     print(Path.cwd())
 
 def changeDirectoryHelper(command: list[str]) -> None:
+    """
+    Handles logic for changing the current working directory
+    
+    Args: 
+        command (list[str]): THe full coammnd separated into a list
+    Returns: None
+    """
 
     # Handles going to the home directory 
     if command[1] == "~":
@@ -88,8 +124,19 @@ def changeDirectoryHelper(command: list[str]) -> None:
         print(f"cd: {path}: No such file or directory")
 
 
-# TODO: Look over
 def unique_history_navigator_helper(history: list[str]) -> list[str]:
+    """
+    Collects one copy of each used command this session in chonological 
+    order.
+    
+    Args:
+        history (list[str]): All the commands used this session
+
+    Returns: 
+        list[str]: An array containing only unique commands sorted from oldest
+        to newest
+    """
+    
     seen = set()
     to_return = []
 
@@ -100,8 +147,14 @@ def unique_history_navigator_helper(history: list[str]) -> list[str]:
     
     return list(reversed(to_return))
 
-# TODO: Look over
+# TODO: Look over this function [DONE???, maybe a onceover]
 def rebuild_prompt_memory() -> None:
+    """
+    Replaces the sessions history with a history only containing a single 
+    copy of each command used this session in chronological order
+    (i.e. oldest to newest)
+    """
+    global session # May need to comment in later
     navigator_history = unique_history_navigator_helper(commands_this_session)
 
     new_history = InMemoryHistory()
@@ -111,7 +164,13 @@ def rebuild_prompt_memory() -> None:
     
     session.history = new_history
 
+# TODO: LOOK OVER
 def add_command_to_history(cmd: str) -> None:
+    """
+    Adds given command to the command history this session and 
+    Rebuilds it as well
+    
+    """
     cmd = cmd.strip()
 
     if not cmd:
@@ -123,17 +182,26 @@ def add_command_to_history(cmd: str) -> None:
 
 # NOTE: TESTING OUT
 def append_new_history_to_file() -> None:
+    """
+    Writes the command history this session to the given HISTFILE
+    
+    """
     if HISTFILE.parent != Path("."):
         HISTFILE.parent.mkdir(parents=True, exist_ok=True)
 
     with HISTFILE.open("a", encoding="utf-8") as file:
-        for i in range(0, len(commands_this_session)):
+        # for cmd in commands_this_session:
+        #     file.write(cmd + "\n")
+        # for i in range(0, len(commands_this_session)):
+        for i in range(history_loaded_start_pointer, len(commands_this_session)):
             file.write(commands_this_session[i] + "\n")
     
     
     
 def historyHelper(args: list[str]) -> None:
-    """Handles the logic for the history built-in and all its sub-commands"""
+    """
+    Handles the logic for the history built-in and all its sub-commands
+    """
     global commands_this_session
 
     # Case: printing the entire history (i.e. handling just "history") 
@@ -206,14 +274,19 @@ def historyHelper(args: list[str]) -> None:
                 print(f"   {i + 1} {commands_this_session[i]}")
 
 def main():
+    """
+    The main loop for the program
+    """
     global commands_this_session
     global HISTFILE
+    global history_loaded_start_pointer
     if os.environ.get("HISTFILE"):
         # global HISTFILE
         # HISTFILE = Path(os.environ.get("HISTFILE"))
         HISTFILE = Path(os.environ.get("HISTFILE")).expanduser()
         commands_this_session = load_history()
         rebuild_prompt_memory()
+        history_loaded_start_pointer = len(commands_this_session)
 
 
 
