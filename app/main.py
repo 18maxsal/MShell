@@ -325,15 +325,16 @@ def main():
         command = session.prompt("$ ") # How the command gets written into the history
 
         # TESTING
-        command = string_parser(command)
-        add_command_to_history(command)
+        # command = string_parser(command)
+        # add_command_to_history(command)
         
-        # if command.strip():
-        #     add_command_to_history(command)
+        if command.strip():
+            add_command_to_history(command)
         
         # command = command.split()
-        # if not command:
-        #     continue
+        command = string_parser(command)
+        if not command:
+            continue
 
         if command[0] == "exit":
             break
