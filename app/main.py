@@ -183,18 +183,27 @@ def add_command_to_history(cmd: str) -> None:
 # NOTE: TESTING OUT
 def append_new_history_to_file() -> None:
     """
-    Writes the command history this session to the given HISTFILE
-    
+    Writes the command history from the global starting point 
+    (i.e. the history_loaded_start_pointer) 
+    to the file address at the global HISTFILE.  
     """
-    if HISTFILE.parent != Path("."):
-        HISTFILE.parent.mkdir(parents=True, exist_ok=True)
-
+    global history_loaded_start_pointer
+    HISTFILE.parent.mkdir(parents=True, exist_ok=True)
+    new_commands = commands_this_session[history_append_start_pointer:]
+    if not new_commands:
+        return
+    
     with HISTFILE.open("a", encoding="utf-8") as file:
-        # for cmd in commands_this_session:
-        #     file.write(cmd + "\n")
-        # for i in range(0, len(commands_this_session)):
-        for i in range(history_loaded_start_pointer, len(commands_this_session)):
-            file.write(commands_this_session[i] + "\n")
+        file.writelines(cmd + "\n" for cmd in new_commands)
+    
+    history_loaded_start_pointer = len(commands_this_session)
+
+    # if HISTFILE.parent != Path("."):
+    #     HISTFILE.parent.mkdir(parents=True, exist_ok=True)
+
+    # with HISTFILE.open("a", encoding="utf-8") as file:
+    #     for i in range(history_loaded_start_pointer, len(commands_this_session)):
+    #         file.write(commands_this_session[i] + "\n")
     
     
     
