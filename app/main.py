@@ -193,7 +193,7 @@ def append_new_history_to_file() -> None:
     if not new_commands:
         return
     
-    with HISTFILE.open("a", encoding="utf-8") as file:
+    with HISTFILE.open("w", encoding="utf-8") as file:
         file.writelines(cmd + "\n" for cmd in new_commands)
     
     history_loaded_start_pointer = len(commands_this_session)
