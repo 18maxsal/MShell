@@ -193,6 +193,7 @@ def append_new_history_to_file() -> None:
     if not new_commands:
         return
     print(history_loaded_start_pointer)
+    print(new_commands)
     # if history_loaded_start_pointer == 0:
     #     print("history_loaded_start_pointer is 0")
     with HISTFILE.open("a", encoding="utf-8") as file:
