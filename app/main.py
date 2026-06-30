@@ -189,13 +189,13 @@ def append_new_history_to_file() -> None:
     """
     global history_loaded_start_pointer
     HISTFILE.parent.mkdir(parents=True, exist_ok=True)
-    new_commands = commands_this_session[history_append_start_pointer:]
+    new_commands = commands_this_session[history_loaded_start_pointer:]
     if not new_commands:
         return
-    print(history_loaded_start_pointer)
-    print(new_commands)
-    print()
-    print(commands_this_session)
+    # print(history_loaded_start_pointer)
+    # print(new_commands)
+    # print()
+    # print(commands_this_session)
     # if history_loaded_start_pointer == 0:
     #     print("history_loaded_start_pointer is 0")
     with HISTFILE.open("a", encoding="utf-8") as file:
