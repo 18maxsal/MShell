@@ -192,25 +192,10 @@ def append_new_history_to_file() -> None:
     new_commands = commands_this_session[history_loaded_start_pointer:]
     if not new_commands:
         return
-    # print(history_loaded_start_pointer)
-    # print(new_commands)
-    # print()
-    # print(commands_this_session)
-    # if history_loaded_start_pointer == 0:
-    #     print("history_loaded_start_pointer is 0")
     with HISTFILE.open("a", encoding="utf-8") as file:
         file.writelines(cmd + "\n" for cmd in new_commands)
     
     history_loaded_start_pointer = len(commands_this_session)
-
-    # if HISTFILE.parent != Path("."):
-    #     HISTFILE.parent.mkdir(parents=True, exist_ok=True)
-
-    # with HISTFILE.open("a", encoding="utf-8") as file:
-    #     for i in range(history_loaded_start_pointer, len(commands_this_session)):
-    #         file.write(commands_this_session[i] + "\n")
-    
-    
     
 def historyHelper(args: list[str]) -> None:
     """
