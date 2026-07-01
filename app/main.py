@@ -349,7 +349,7 @@ def main():
         
         # command = command.split()
         command = string_parser(command)
-        print(command)
+        # print(command)
         if not command:
             continue
 
