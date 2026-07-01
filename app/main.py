@@ -83,7 +83,8 @@ def externalCommandRunnerHelper(command: list[str]) -> bool:
     if executable is None:
         return False
     
-    subprocess.run([executable] + command[1:])
+    # subprocess.run([executable] + command[1:])
+    subprocess.run(command)
     return True
 
     # MAYBE DELETE
