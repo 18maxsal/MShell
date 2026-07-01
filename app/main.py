@@ -291,7 +291,7 @@ def string_parser(command: str) -> list[str]:
                 index += 1
                 while index < command_length:
                     if command[index] == '\'':
-                        if curr_word and command[index + 1] == '\'':
+                        if curr_word and (index + 1) < command_length and command[index + 1] == '\'':
                             index += 2
                             continue
                         else:
