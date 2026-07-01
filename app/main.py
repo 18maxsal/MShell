@@ -6,6 +6,9 @@ from prompt_toolkit import PromptSession
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.history import InMemoryHistory
 
+import shutil
+
+
 BUILT_INS = ["echo", "exit", "type", "pwd", "cd", "history"]
 HISTFILE = Path(".mshell_history")
 commands_this_session: list[str] = []
@@ -44,7 +47,7 @@ def echoHelper(command: list[str]) -> None:
         to_print = " ".join(command[1:])
     print(to_print)
 
-def typeHeler(command: list[str]) -> None:
+def typeHelper(command: list[str]) -> None:
     """
     Handles the logic for the 'type' built-in.
     Prints whether the given command is of type built-in, 
@@ -57,14 +60,19 @@ def typeHeler(command: list[str]) -> None:
         print(f"{command[1]} is a shell builtin")
     else: # Command is not Built-in
         if command[1]:
-            path = os.environ.get('PATH')
-            path_list = path.split(os.pathsep)
-            for i in range(len(path_list)):
-                full_path = os.path.join(path_list[i], command[1])
-                if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-                    print(f"{command[1]} is {full_path}")
-                    return
-            print(f"{command[1]}: not found")
+            to_find = shutil.which(command[1])
+            if to_find:
+                print(f"{command[1]} is {to_find}")
+            else:
+                print(f"{command[1]}: not found")
+            # path = os.environ.get('PATH')
+            # path_list = path.split(os.pathsep)
+            # for i in range(len(path_list)):
+            #     full_path = os.path.join(path_list[i], command[1])
+            #     if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
+            #         print(f"{command[1]} is {full_path}")
+            #         return
+            # print(f"{command[1]}: not found")
 
         else: # Case: there is no command[1] (i.e. we just have "type " for input)
             print("not found")
@@ -77,20 +85,30 @@ def externalCommandRunnerHelper(command: list[str]) -> bool:
     Returns: True if the command was found, false otherwise
        
     """
-    path = os.environ.get("PATH")
+    print("in external command runner function")
+    executable = shutil.which(command[0])
 
-    if path is None:
+    if executable is None:
         return False
     
-    path_list = path.split(os.pathsep)
+    subprocess.run([executable] + command[1:])
+    return True
 
-    for directory in path_list:
-        full_path = os.path.join(directory, command[0])
+    # MAYBE DELETE
+    # path = os.environ.get("PATH")
 
-        if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-            subprocess.run([full_path] + command[1:])
-            return True
-    return False
+    # if path is None:
+    #     return False
+    
+    # path_list = path.split(os.pathsep)
+
+    # for directory in path_list:
+    #     full_path = os.path.join(directory, command[0])
+
+    #     if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
+    #         subprocess.run([full_path] + command[1:])
+    #         return True
+    # return False
 
 
     # path = os.environ.get('PATH')
@@ -375,7 +393,7 @@ def main():
             echoHelper(command = command)
             
         elif command[0] == "type":
-            typeHeler(command = command)
+            typeHelper(command = command)
         
         elif command[0] == "pwd":
             pwdHelper()
