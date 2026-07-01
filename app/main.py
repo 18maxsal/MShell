@@ -77,7 +77,7 @@ def externalCommandRunnerHelper(command: list[str]) -> bool:
     Returns: True if the command was found, false otherwise
        
     """
-    print("in external command runner function")
+    # print("in external command runner function")
     executable = shutil.which(command[0])
 
     if executable is None:
