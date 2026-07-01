@@ -77,23 +77,39 @@ def externalCommandRunnerHelper(command: list[str]) -> bool:
     Returns: True if the command was found, false otherwise
        
     """
-    path = os.environ.get('PATH')
-    path_list = path.split(os.pathsep)
-    for i in range(len(path_list)):
-        full_path = os.path.join(path_list[i], command[0])
-        # print(f"full_path: {full_path}")
-        if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-            if full_path.endswith(command[0]):
-                full_path = full_path.split("/")
-                custom_command = [full_path[-1]]
-                ptr = 1
-                while ptr < len(command):
-                    custom_command.append(command[ptr])
-                    ptr += 1
-                subprocess.run(custom_command)
-                return True
+    path = os.environ.get("PATH")
 
+    if path is None:
+        return False
+    
+    path_list = path.split(os.pathsep)
+
+    for directory in path_list:
+        full_path = os.path.join(directory, command[0])
+
+        if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
+            subprocess.run([full_path] + command[1:])
+            return True
     return False
+
+
+    # path = os.environ.get('PATH')
+    # path_list = path.split(os.pathsep)
+    # for i in range(len(path_list)):
+    #     full_path = os.path.join(path_list[i], command[0])
+    #     # print(f"full_path: {full_path}")
+    #     if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
+    #         if full_path.endswith(command[0]):
+    #             full_path = full_path.split("/")
+    #             custom_command = [full_path[-1]]
+    #             ptr = 1
+    #             while ptr < len(command):
+    #                 custom_command.append(command[ptr])
+    #                 ptr += 1
+    #             subprocess.run(custom_command)
+    #             return True
+
+    # return False
 
 def pwdHelper() -> None:
     """Prints current working directory"""
