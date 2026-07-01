@@ -65,14 +65,6 @@ def typeHelper(command: list[str]) -> None:
                 print(f"{command[1]} is {to_find}")
             else:
                 print(f"{command[1]}: not found")
-            # path = os.environ.get('PATH')
-            # path_list = path.split(os.pathsep)
-            # for i in range(len(path_list)):
-            #     full_path = os.path.join(path_list[i], command[1])
-            #     if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-            #         print(f"{command[1]} is {full_path}")
-            #         return
-            # print(f"{command[1]}: not found")
 
         else: # Case: there is no command[1] (i.e. we just have "type " for input)
             print("not found")
