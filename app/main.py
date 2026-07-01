@@ -272,10 +272,12 @@ def historyHelper(args: list[str]) -> None:
             for i in range(start, len(commands_this_session)):
                 print(f"   {i + 1} {commands_this_session[i]}")
 
+#FIXME: Does not parse strings correctly
 def string_parser(command: str) -> list[str]:
     to_return = []
     index = 0
     command_length = len(command)
+    # print(f"command: {command}")
     if command:
         curr_word = ""
         while index < command_length:
@@ -296,10 +298,10 @@ def string_parser(command: str) -> list[str]:
             else:
                 curr_word += command[index]
                 index += 1
-                    
+        to_return.append(curr_word)
             
 
-    return []
+    return to_return
 
 def main():
     """
@@ -333,6 +335,7 @@ def main():
         
         # command = command.split()
         command = string_parser(command)
+        # print(command)
         if not command:
             continue
 
