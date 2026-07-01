@@ -300,48 +300,101 @@ def historyHelper(args: list[str]) -> None:
 
 #FIXME: Does not parse strings correctly
 def string_parser(command: str) -> list[str]:
-    to_return = []
+
+    args = []
+    curr = []
+    in_single_quote = False
+    in_double_quote = False
+    building_arg = False
+
     index = 0
-    command_length = len(command)
-    # print(f"command: {command}")
-    if command:
-        curr_word = ""
-        while index < command_length:
-            if command[index] == '\'':
-                if curr_word and (index + 1) < command_length and command[index + 1] == '\'':
-                    index += 2
-                    continue
-                # if curr_word:
-                #     to_return.append(curr_word)
-                curr_word = ""
-                index += 1
-                while index < command_length:
-                    if command[index] == '\'':
-                        if curr_word and (index + 1) < command_length and command[index + 1] == '\'':
-                            index += 2
-                            continue
-                        else:
-                            to_return.append(curr_word)
-                        # if curr_word:
-                        #     to_return.append(curr_word)
-                        # curr_word = ""
-                        break
-                    curr_word += command[index]
-                    index += 1
-                curr_word = ""
-                index += 1
-            elif command[index] == " ":
-                if curr_word:
-                    to_return.append(curr_word)
-                    curr_word = ""
-                index += 1
+
+    while index < len(command):
+        character = command[index]
+
+        if in_single_quote:
+            if character == '\'':
+                in_single_quote = False
             else:
-                curr_word += command[index]
-                index += 1
-        to_return.append(curr_word)
+                curr.append(character)
+            index += 1
+            continue
+
+        if in_double_quote:
+            pass
+
+        # if character.isspace():
+        if character == " ":
+            if building_arg:
+                args.append("".join(curr))
+                curr = []
+                building_arg = False
+            index += 1
+            continue
+
+        if character == '\'':
+            in_single_quote = True
+            building_arg = True
+            index += 1
+            continue
+
+        if character == "\"":
+            pass
+            # in_double_quote = True
+            # building_arg = True
+            # index += 1
+            # continue
+        curr.append(character)
+        building_arg = True
+        index += 1
+
+    if building_arg:
+        args.append("".join(curr))
+        
+    return args
+
+    # to_return = []
+    # index = 0
+    # command_length = len(command)
+    # # print(f"command: {command}")
+    # if command:
+    #     curr_word = ""
+    #     while index < command_length:
+    #         if command[index] == '\'':
+    #             if curr_word and (index + 1) < command_length and command[index + 1] == '\'':
+    #                 index += 2
+    #                 continue
+    #             # if curr_word:
+    #             #     to_return.append(curr_word)
+    #             curr_word = ""
+    #             index += 1
+    #             while index < command_length:
+    #                 if command[index] == '\'':
+    #                     if curr_word and (index + 1) < command_length and command[index + 1] == '\'':
+    #                         index += 2
+    #                         continue
+    #                     else:
+    #                         to_return.append(curr_word)
+    #                     # if curr_word:
+    #                     #     to_return.append(curr_word)
+    #                     # curr_word = ""
+    #                     break
+    #                 curr_word += command[index]
+    #                 index += 1
+    #             curr_word = ""
+    #             index += 1
+    #         elif command[index] == " ":
+    #             if curr_word:
+    #                 to_return.append(curr_word)
+    #                 curr_word = ""
+    #             index += 1
+    #         else:
+    #             curr_word += command[index]
+    #             index += 1
+    #     to_return.append(curr_word)
             
 
-    return to_return
+    # return to_return
 
 def main():
     """
