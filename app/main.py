@@ -282,14 +282,28 @@ def string_parser(command: str) -> list[str]:
         curr_word = ""
         while index < command_length:
             if command[index] == '\'':
+                if curr_word and command[index + 1] == '\'':
+                    index += 2
+                    continue
+                # if curr_word:
+                #     to_return.append(curr_word)
                 curr_word = ""
                 index += 1
                 while index < command_length:
                     if command[index] == '\'':
-                        to_return.append(curr_word)
+                        if curr_word and command[index + 1] == '\'':
+                            index += 2
+                            continue
+                        else:
+                            to_return.append(curr_word)
+                        # if curr_word:
+                        #     to_return.append(curr_word)
+                        # curr_word = ""
                         break
                     curr_word += command[index]
                     index += 1
+                curr_word = ""
+                index += 1
             elif command[index] == " ":
                 if curr_word:
                     to_return.append(curr_word)
@@ -335,7 +349,7 @@ def main():
         
         # command = command.split()
         command = string_parser(command)
-        # print(command)
+        print(command)
         if not command:
             continue
 
