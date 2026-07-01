@@ -294,7 +294,7 @@ def string_parser(command: str) -> list[str]:
                 if curr_word:
                     to_return.append(curr_word)
                     curr_word = ""
-                    index += 1
+                index += 1
             else:
                 curr_word += command[index]
                 index += 1
