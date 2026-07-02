@@ -322,7 +322,12 @@ def string_parser(command: str) -> list[str]:
             continue
 
         if in_double_quote:
-            pass
+            if character == "\"":
+                in_double_quote = True
+            else:
+                curr.append(character)
+            index += 1
+            continue
 
         # if character.isspace():
         if character == " ":
@@ -340,11 +345,10 @@ def string_parser(command: str) -> list[str]:
             continue
 
         if character == "\"":
-            pass
-            # in_double_quote = True
-            # building_arg = True
-            # index += 1
-            # continue
+            in_double_quote = True
+            building_arg = True
+            index += 1
+            continue
         curr.append(character)
         building_arg = True
         index += 1
