@@ -351,15 +351,23 @@ def string_parser(command: str) -> list[str]:
             index += 1
             continue
 
-        # Handling the first doubel quote
+        # Handling the first double quote
         if character == "\"":
             in_double_quote = True
             building_arg = True
             index += 1
             continue
+        if character == "\\":
+            index += 1
+            character = command[index]
+            curr.append(character)
+            index += 1
+            building_arg = True 
+            continue
         curr.append(character)
         building_arg = True
         index += 1
+    
 
     if building_arg:
         args.append("".join(curr))
