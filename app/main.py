@@ -328,6 +328,14 @@ def string_parser(command: str) -> list[str]:
         if in_double_quote:
             if character == "\"":
                 in_double_quote = False
+            elif character == "\\":
+                if (index + 1) < len(command) and command[index + 1] in ["\"", "\\", "$", "`"]:
+                    index += 1
+                    curr.append(character)
+                    # index += 1
+                    # continue
+                else:
+                    curr.append(character)
             else:
                 curr.append(character)
             index += 1
