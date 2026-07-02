@@ -357,6 +357,10 @@ def string_parser(command: str) -> list[str]:
             building_arg = True
             index += 1
             continue
+
+        # Handles backslash (i.e. "\") characters
+        # We treat the character after the backslash
+        # As a literal
         if character == "\\":
             index += 1
             character = command[index]
