@@ -323,7 +323,7 @@ def string_parser(command: str) -> list[str]:
 
         if in_double_quote:
             if character == "\"":
-                in_double_quote = True
+                in_double_quote = False
             else:
                 curr.append(character)
             index += 1
