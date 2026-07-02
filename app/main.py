@@ -331,6 +331,7 @@ def string_parser(command: str) -> list[str]:
             elif character == "\\":
                 if (index + 1) < len(command) and command[index + 1] in ["\"", "\\", "$", "`"]:
                     index += 1
+                    character = command[index]
                     curr.append(character)
                     # index += 1
                     # continue
