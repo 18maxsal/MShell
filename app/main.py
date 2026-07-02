@@ -313,6 +313,8 @@ def string_parser(command: str) -> list[str]:
     while index < len(command):
         character = command[index]
 
+        # Case: Single quotes (i.e. ').  Treat everything as a literal
+        # Characters until the next single quote
         if in_single_quote:
             if character == '\'':
                 in_single_quote = False
@@ -321,6 +323,8 @@ def string_parser(command: str) -> list[str]:
             index += 1
             continue
 
+        # Case: Double quotes.  Handle everything as a literal until the 
+        # Next double quote
         if in_double_quote:
             if character == "\"":
                 in_double_quote = False
@@ -329,7 +333,9 @@ def string_parser(command: str) -> list[str]:
             index += 1
             continue
 
+
         # if character.isspace():
+        # Handles when we encounter a space
         if character == " ":
             if building_arg:
                 args.append("".join(curr))
@@ -338,12 +344,14 @@ def string_parser(command: str) -> list[str]:
             index += 1
             continue
 
+        # Handling the first single quote
         if character == '\'':
             in_single_quote = True
             building_arg = True
             index += 1
             continue
 
+        # Handling the first doubel quote
         if character == "\"":
             in_double_quote = True
             building_arg = True
@@ -358,48 +366,6 @@ def string_parser(command: str) -> list[str]:
         
     return args
 
-    # to_return = []
-    # index = 0
-    # command_length = len(command)
-    # # print(f"command: {command}")
-    # if command:
-    #     curr_word = ""
-    #     while index < command_length:
-    #         if command[index] == '\'':
-    #             if curr_word and (index + 1) < command_length and command[index + 1] == '\'':
-    #                 index += 2
-    #                 continue
-    #             # if curr_word:
-    #             #     to_return.append(curr_word)
-    #             curr_word = ""
-    #             index += 1
-    #             while index < command_length:
-    #                 if command[index] == '\'':
-    #                     if curr_word and (index + 1) < command_length and command[index + 1] == '\'':
-    #                         index += 2
-    #                         continue
-    #                     else:
-    #                         to_return.append(curr_word)
-    #                     # if curr_word:
-    #                     #     to_return.append(curr_word)
-    #                     # curr_word = ""
-    #                     break
-    #                 curr_word += command[index]
-    #                 index += 1
-    #             curr_word = ""
-    #             index += 1
-    #         elif command[index] == " ":
-    #             if curr_word:
-    #                 to_return.append(curr_word)
-    #                 curr_word = ""
-    #             index += 1
-    #         else:
-    #             curr_word += command[index]
-    #             index += 1
-    #     to_return.append(curr_word)
-            
-
-    # return to_return
 
 def main():
     """
