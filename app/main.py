@@ -37,15 +37,32 @@ def save_history() -> None:
         for cmd in commands_this_session:
             file.write(cmd + "\n")
 
-def echoHelper(command: list[str]) -> None:
+# TODO: FINISH IMPLEMENTATION FOR REDIRECTING
+# def echoHelper(command: list[str]) -> None:
+def echoHelper(command: list[str], is_redirected: bool, path: str) -> None:
     """
     Handles the logic for the 'echo' built-in.
     Prints the given string to output.
     """
     to_print = ""
+    if is_redirected:
+        command, file = get_command_and_file_from_redirect(command)
     if len(command) > 1:
         to_print = " ".join(command[1:])
-    print(to_print)
+    
+    if is_redirected:
+        with open(file, "w", encoding="utf-8") as to_file:
+            for i in range(1, len(command)):
+                to_file.write(command[i])
+    else:
+        print(to_print)
+
+
+    # print(to_print)
+    # if is_redirected:
+    #     print(to_print)
+    # else:
+    #     pass
 
 def typeHelper(command: list[str]) -> None:
     """
@@ -86,41 +103,6 @@ def externalCommandRunnerHelper(command: list[str]) -> bool:
     # subprocess.run([executable] + command[1:])
     subprocess.run(command)
     return True
-
-    # MAYBE DELETE
-    # path = os.environ.get("PATH")
-
-    # if path is None:
-    #     return False
-    
-    # path_list = path.split(os.pathsep)
-
-    # for directory in path_list:
-    #     full_path = os.path.join(directory, command[0])
-
-    #     if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-    #         subprocess.run([full_path] + command[1:])
-    #         return True
-    # return False
-
-
-    # path = os.environ.get('PATH')
-    # path_list = path.split(os.pathsep)
-    # for i in range(len(path_list)):
-    #     full_path = os.path.join(path_list[i], command[0])
-    #     # print(f"full_path: {full_path}")
-    #     if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-    #         if full_path.endswith(command[0]):
-    #             full_path = full_path.split("/")
-    #             custom_command = [full_path[-1]]
-    #             ptr = 1
-    #             while ptr < len(command):
-    #                 custom_command.append(command[ptr])
-    #                 ptr += 1
-    #             subprocess.run(custom_command)
-    #             return True
-
-    # return False
 
 def pwdHelper() -> None:
     """Prints current working directory"""
@@ -299,8 +281,12 @@ def historyHelper(args: list[str]) -> None:
             for i in range(start, len(commands_this_session)):
                 print(f"   {i + 1} {commands_this_session[i]}")
 
-#FIXME: Does not parse strings correctly
 def string_parser(command: str) -> list[str]:
+    """
+    Parses the given command into an array and supports 
+    single and double quotes with escape characters (often
+    denoted by a backslash) as well.
+    """
 
     args = []
     curr = []
@@ -388,6 +374,14 @@ def string_parser(command: str) -> list[str]:
         
     return args
 
+def get_command_and_file_from_redirect(command: list[str]) -> tuple[list[str], str]:
+    """
+    Extracts the destination file name when we wish to have our output
+    redirected and written to a file.
+    """
+    command_to_return = command[:-2]
+    file = command[-1] 
+    return (command_to_return, file)
 
 def main():
     """
@@ -412,6 +406,7 @@ def main():
         # command = input("$ ")
         command = session.prompt("$ ") # How the command gets written into the history
 
+
         # TESTING
         # command = string_parser(command)
         # add_command_to_history(command)
@@ -421,14 +416,26 @@ def main():
         
         # command = command.split()
         command = string_parser(command)
+
+        # #TESTING
+        # print(command)
+        # print(get_command_and_file_from_redirect(command))
+        # break
+        
         # print(command)
         if not command:
             continue
 
+        is_redirected = False
+        if ">" in command:
+            is_redirected = True
+        # TODO: change functions above to support redirecting to a file
+
         if command[0] == "exit":
             break
         elif command[0] == "echo":
-            echoHelper(command = command)
+            # echoHelper(command = command)
+            echoHelper(command = command, is_redirected= is_redirected)
             
         elif command[0] == "type":
             typeHelper(command = command)
