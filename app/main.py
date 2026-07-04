@@ -46,14 +46,14 @@ def echoHelper(command: list[str], is_redirected: bool) -> None:
     """
     to_print = ""
     if is_redirected:
-        command, file = get_command_and_file_from_redirect(command)
+        command, file_name = get_command_and_file_from_redirect(command)
     if len(command) > 1:
         to_print = " ".join(command[1:])
     
     if is_redirected:
-        with open(file, "w", encoding="utf-8") as to_file:
+        with open(file_name, "w", encoding="utf-8") as file:
             for i in range(1, len(command)):
-                to_file.write(command[i])
+                file.write(command[i])
     else:
         print(to_print)
 
@@ -86,7 +86,8 @@ def typeHelper(command: list[str]) -> None:
         else: # Case: there is no command[1] (i.e. we just have "type " for input)
             print("not found")
 
-def externalCommandRunnerHelper(command: list[str]) -> bool:
+# def externalCommandRunnerHelper(command: list[str]) -> bool:
+def externalCommandRunnerHelper(command: list[str], is_redirected: bool) -> bool:
     """
     Handles the logic for running non-built-in files/commands
     if they exist.
@@ -94,14 +95,21 @@ def externalCommandRunnerHelper(command: list[str]) -> bool:
     Returns: True if the command was found, false otherwise
        
     """
+    if is_redirected:
+        command, file_name = get_command_and_file_from_redirect(command)
     # print("in external command runner function")
     executable = shutil.which(command[0])
 
     if executable is None:
         return False
     
+    if is_redirected:
+        with open(file_name, "w", encoding="utf-8") as file:
+            subprocess.run(command, stdout=file)
+    else:
+        subprocess.run(command)
     # subprocess.run([executable] + command[1:])
-    subprocess.run(command)
+    # subprocess.run(command)
     return True
 
 def pwdHelper() -> None:
@@ -450,7 +458,8 @@ def main():
             historyHelper(args = command)
         
         else:
-            if not externalCommandRunnerHelper(command = command):
+            # if not externalCommandRunnerHelper(command = command):
+            if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected):
                 print(f"{command[0]}: command not found")
             else:
                 pass
