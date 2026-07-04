@@ -424,6 +424,8 @@ def main():
         
         # command = command.split()
         command = string_parser(command)
+        if [">", "1>"] in command:
+            is_redirected = True
 
         # #TESTING
         # print(command)
