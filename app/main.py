@@ -39,7 +39,7 @@ def save_history() -> None:
 
 # TODO: FINISH IMPLEMENTATION FOR REDIRECTING
 # def echoHelper(command: list[str]) -> None:
-def echoHelper(command: list[str], is_redirected: bool, path: str) -> None:
+def echoHelper(command: list[str], is_redirected: bool) -> None:
     """
     Handles the logic for the 'echo' built-in.
     Prints the given string to output.
