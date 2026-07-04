@@ -424,8 +424,8 @@ def main():
         
         # command = command.split()
         command = string_parser(command)
-        if [">", "1>"] in command:
-            is_redirected = True
+        # if [">", "1>"] in command:
+        #     is_redirected = True
 
         # #TESTING
         # print(command)
@@ -437,7 +437,8 @@ def main():
             continue
 
         is_redirected = False
-        if ">" in command:
+        # if [">", "1>"] in command:
+        if ">" in command or "1>" in command:
             is_redirected = True
         # TODO: change functions above to support redirecting to a file
 
