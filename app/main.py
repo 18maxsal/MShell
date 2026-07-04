@@ -52,8 +52,9 @@ def echoHelper(command: list[str], is_redirected: bool) -> None:
     
     if is_redirected:
         with open(file_name, "w", encoding="utf-8") as file:
-            for i in range(1, len(command)):
-                file.write(command[i] + " ")
+            file.writelines(to_print)
+            # for i in range(1, len(command)):
+            #     file.write(command[i] + " ")
             file.write("\n")
     else:
         print(to_print)
