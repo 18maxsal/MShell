@@ -118,12 +118,15 @@ def externalCommandRunnerHelper(command: list[str], is_redirected: bool,
         with open(file_name, "w", encoding="utf-8") as file:
             subprocess.run(command, stdout=file)
     elif is_redirected_error:
-        result = subprocess.run(command, capture_output=True, text=True)
+        # result = subprocess.run(command, capture_output=True, text=True)
         with open(file_name, "w", encoding="utf-8") as file:
-            file.writelines(result.stderr)
+            subprocess.run(command, stderr=file)
+            # file.writelines(result.stderr)
+            # file.write(result.stderr)
             # file.write("\n")
-        if result.stdout:
-            print(result.stdout) 
+        # if result.stdout:
+            # print(result.stdout) 
+            # sys.stdout.write(result.stdout)
         # print(result.stdout)
     else:
         subprocess.run(command)
