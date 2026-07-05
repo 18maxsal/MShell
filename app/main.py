@@ -122,6 +122,8 @@ def externalCommandRunnerHelper(command: list[str], is_redirected: bool,
         with open(file_name, "w", encoding="utf-8") as file:
             file.writelines(result.stderr)
             # file.write("\n")
+        if result.stdout:
+            print(result.stdout) 
         # print(result.stdout)
     else:
         subprocess.run(command)
