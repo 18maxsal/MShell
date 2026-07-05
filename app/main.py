@@ -39,13 +39,15 @@ def save_history() -> None:
 
 # TODO: FINISH IMPLEMENTATION FOR REDIRECTING
 # def echoHelper(command: list[str]) -> None:
-def echoHelper(command: list[str], is_redirected: bool) -> None:
+# def echoHelper(command: list[str], is_redirected: bool) -> None:
+def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: bool) -> None:
     """
     Handles the logic for the 'echo' built-in.
     Prints the given string to output.
     """
     to_print = ""
-    if is_redirected:
+    # if is_redirected:
+    if is_redirected or is_redirected_error:
         command, file_name = get_command_and_file_from_redirect(command)
     if len(command) > 1:
         to_print = " ".join(command[1:])
@@ -56,6 +58,8 @@ def echoHelper(command: list[str], is_redirected: bool) -> None:
             # for i in range(1, len(command)):
             #     file.write(command[i] + " ")
             file.write("\n")
+    elif is_redirected_error:
+        pass
     else:
         print(to_print)
 
@@ -89,7 +93,9 @@ def typeHelper(command: list[str]) -> None:
             print("not found")
 
 # def externalCommandRunnerHelper(command: list[str]) -> bool:
-def externalCommandRunnerHelper(command: list[str], is_redirected: bool) -> bool:
+# def externalCommandRunnerHelper(command: list[str], is_redirected: bool) -> bool:
+def externalCommandRunnerHelper(command: list[str], is_redirected: bool, 
+                                is_redirected_error) -> bool:
     """
     Handles the logic for running non-built-in files/commands
     if they exist.
@@ -97,7 +103,8 @@ def externalCommandRunnerHelper(command: list[str], is_redirected: bool) -> bool
     Returns: True if the command was found, false otherwise
        
     """
-    if is_redirected:
+    # if is_redirected:
+    if is_redirected or is_redirected_error:
         command, file_name = get_command_and_file_from_redirect(command)
     # print("in external command runner function")
     executable = shutil.which(command[0])
@@ -108,6 +115,11 @@ def externalCommandRunnerHelper(command: list[str], is_redirected: bool) -> bool
     if is_redirected:
         with open(file_name, "w", encoding="utf-8") as file:
             subprocess.run(command, stdout=file)
+    elif is_redirected_error:
+        result = subprocess.run(command, capture_output=True, text=True)
+        with open(file_name, "w", encoding="utf-8") as file:
+            file.writelines(result.stderr)
+        file.write("\n")
     else:
         subprocess.run(command)
     # subprocess.run([executable] + command[1:])
@@ -439,16 +451,21 @@ def main():
             continue
 
         is_redirected = False
+        is_redirected_error = False
         # if [">", "1>"] in command:
         if ">" in command or "1>" in command:
             is_redirected = True
-        # TODO: change functions above to support redirecting to a file
+        elif "2>" in command:
+            is_redirected_error = True
+        # TODO: change functions above to support redirecting errors to a file
 
         if command[0] == "exit":
             break
         elif command[0] == "echo":
             # echoHelper(command = command)
-            echoHelper(command = command, is_redirected= is_redirected)
+            # echoHelper(command = command, is_redirected= is_redirected)
+            echoHelper(command = command, is_redirected= is_redirected, 
+                       is_redirected_error= is_redirected_error)
             
         elif command[0] == "type":
             typeHelper(command = command)
@@ -464,7 +481,9 @@ def main():
         
         else:
             # if not externalCommandRunnerHelper(command = command):
-            if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected):
+            # if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected):
+            if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected, 
+                                               is_redirected_error=is_redirected_error):
                 print(f"{command[0]}: command not found")
             else:
                 pass
