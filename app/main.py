@@ -59,7 +59,9 @@ def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: boo
             #     file.write(command[i] + " ")
             file.write("\n")
     elif is_redirected_error:
-        pass
+        print(to_print)
+        with open(file_name, "w", encoding="utf-8") as file:
+            pass
     else:
         print(to_print)
 
