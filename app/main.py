@@ -119,7 +119,7 @@ def externalCommandRunnerHelper(command: list[str], is_redirected: bool,
         result = subprocess.run(command, capture_output=True, text=True)
         with open(file_name, "w", encoding="utf-8") as file:
             file.writelines(result.stderr)
-            file.write("\n")
+            # file.write("\n")
     else:
         subprocess.run(command)
     # subprocess.run([executable] + command[1:])
