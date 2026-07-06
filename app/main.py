@@ -478,7 +478,7 @@ def main():
             is_redirected = True
         elif "2>" in command:
             is_redirected_error = True
-        elif ">>" in command:
+        elif ">>" in command or "1>>" in command:
             is_redirected_append = True
         # TODO: change functions above to support redirecting errors to a file
 
