@@ -41,15 +41,17 @@ def save_history() -> None:
 # def echoHelper(command: list[str]) -> None:
 # def echoHelper(command: list[str], is_redirected: bool) -> None:
 # def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: bool) -> None:
+# def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: bool, 
+#                is_redirected_append: bool) -> None:
 def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: bool, 
-               is_redirected_append: bool) -> None:
+               is_redirected_append: bool, is_redirected_append_error: bool) -> None:
     """
     Handles the logic for the 'echo' built-in.
     Prints the given string to output.
     """
     to_print = ""
     # if is_redirected:
-    if is_redirected or is_redirected_error or is_redirected_append:
+    if is_redirected or is_redirected_error or is_redirected_append or is_redirected_append_error:
         command, file_name = get_command_and_file_from_redirect(command)
     if len(command) > 1:
         to_print = " ".join(command[1:])
@@ -68,6 +70,10 @@ def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: boo
         with open(file_name, "a", encoding="utf-8") as file:
             file.writelines(to_print)
             file.write("\n") # may or may not need
+    elif is_redirected_append_error:
+        print(to_print)
+        with open(file_name, "a", encoding="utf-8") as file:
+            pass
     else:
         print(to_print)
 
@@ -104,9 +110,13 @@ def typeHelper(command: list[str]) -> None:
 # def externalCommandRunnerHelper(command: list[str], is_redirected: bool) -> bool:
 # def externalCommandRunnerHelper(command: list[str], is_redirected: bool, 
 #                                 is_redirected_error) -> bool:
+# def externalCommandRunnerHelper(command: list[str], is_redirected: bool, 
+#                                 is_redirected_error: bool, 
+#                                 is_redirected_append: bool) -> bool:
 def externalCommandRunnerHelper(command: list[str], is_redirected: bool, 
                                 is_redirected_error: bool, 
-                                is_redirected_append: bool) -> bool:
+                                is_redirected_append: bool, 
+                                is_redirected_append_error: bool) -> bool:
     """
     Handles the logic for running non-built-in files/commands
     if they exist.
@@ -115,7 +125,7 @@ def externalCommandRunnerHelper(command: list[str], is_redirected: bool,
        
     """
     # if is_redirected:
-    if is_redirected or is_redirected_error or is_redirected_append:
+    if is_redirected or is_redirected_error or is_redirected_append or is_redirected_append_error:
         command, file_name = get_command_and_file_from_redirect(command)
     # print("in external command runner function")
     executable = shutil.which(command[0])
@@ -130,16 +140,12 @@ def externalCommandRunnerHelper(command: list[str], is_redirected: bool,
         # result = subprocess.run(command, capture_output=True, text=True)
         with open(file_name, "w", encoding="utf-8") as file:
             subprocess.run(command, stderr=file)
-            # file.writelines(result.stderr)
-            # file.write(result.stderr)
-            # file.write("\n")
-        # if result.stdout:
-            # print(result.stdout) 
-            # sys.stdout.write(result.stdout)
-        # print(result.stdout)
     elif is_redirected_append:
         with open(file_name, "a", encoding="utf-8") as file:
             subprocess.run(command, stdout=file)
+    elif is_redirected_append_error:
+        with open(file_name, "a", encoding="utf-8") as file:
+            subprocess.run(command, stderr=file)
     else:
         subprocess.run(command)
     # subprocess.run([executable] + command[1:])
@@ -473,6 +479,7 @@ def main():
         is_redirected = False
         is_redirected_error = False
         is_redirected_append = False
+        is_redirected_append_error = False
         # if [">", "1>"] in command:
         if ">" in command or "1>" in command:
             is_redirected = True
@@ -480,6 +487,8 @@ def main():
             is_redirected_error = True
         elif ">>" in command or "1>>" in command:
             is_redirected_append = True
+        elif "2>>" in command:
+            is_redirected_append_error = True
         # TODO: change functions above to support redirecting errors to a file
 
         if command[0] == "exit":
@@ -489,9 +498,13 @@ def main():
             # echoHelper(command = command, is_redirected= is_redirected)
             # echoHelper(command = command, is_redirected= is_redirected, 
             #            is_redirected_error= is_redirected_error)
+            # echoHelper(command = command, is_redirected= is_redirected, 
+            #            is_redirected_error= is_redirected_error, 
+            #            is_redirected_append= is_redirected_append)
             echoHelper(command = command, is_redirected= is_redirected, 
                        is_redirected_error= is_redirected_error, 
-                       is_redirected_append= is_redirected_append)
+                       is_redirected_append= is_redirected_append, 
+                       is_redirected_append_error= is_redirected_append_error)
             
         elif command[0] == "type":
             typeHelper(command = command)
@@ -510,9 +523,13 @@ def main():
             # if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected):
             # if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected, 
             #                                    is_redirected_error=is_redirected_error):
+            # if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected, 
+            #                                    is_redirected_error=is_redirected_error, 
+            #                                    is_redirected_append=is_redirected_append):
             if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected, 
                                                is_redirected_error=is_redirected_error, 
-                                               is_redirected_append=is_redirected_append):
+                                               is_redirected_append=is_redirected_append, 
+                                               is_redirected_append_error=is_redirected_append_error):
                 print(f"{command[0]}: command not found")
             else:
                 pass
