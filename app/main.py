@@ -15,7 +15,9 @@ BUILT_INS_COMPLETER = WordCompleter(BUILT_INS)
 HISTFILE = Path(".mshell_history")
 commands_this_session: list[str] = []
 # session = PromptSession(history=InMemoryHistory())
-session = PromptSession(history=InMemoryHistory(), completer=BUILT_INS_COMPLETER)
+# session = PromptSession(history=InMemoryHistory(), completer=BUILT_INS_COMPLETER)
+session = PromptSession(history=InMemoryHistory(), completer=BUILT_INS_COMPLETER, 
+                        complete_while_typing=False, enable_system_prompt=False)
 history_append_start_pointer = 0
 history_loaded_start_pointer = 0
 
