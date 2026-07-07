@@ -5,14 +5,17 @@ from pathlib import Path
 from prompt_toolkit import PromptSession
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.history import InMemoryHistory
+from prompt_toolkit.completion import WordCompleter
 
 import shutil
 
 
 BUILT_INS = ["echo", "exit", "type", "pwd", "cd", "history"]
+BUILT_INS_COMPLETER = WordCompleter(BUILT_INS)
 HISTFILE = Path(".mshell_history")
 commands_this_session: list[str] = []
-session = PromptSession(history=InMemoryHistory())
+# session = PromptSession(history=InMemoryHistory())
+session = PromptSession(history=InMemoryHistory(), completer=BUILT_INS_COMPLETER)
 history_append_start_pointer = 0
 history_loaded_start_pointer = 0
 
