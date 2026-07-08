@@ -17,7 +17,14 @@ from prompt_toolkit.shortcuts import CompleteStyle
 import shutil
 
 class BuiltInCompleter(Completer):
+    """
+    TODO: fill in class definition here
+    """
+
     def get_completions(self, document, complete_event):
+        """
+        TODO: fill in method definition here
+        """
         text=  document.text_before_cursor
 
         if " " in text:
@@ -33,6 +40,9 @@ class BuiltInCompleter(Completer):
             )
 
 def get_terminal_size():
+    """
+    TODO: fill in method definition here
+    """
     size = shutil.get_terminal_size((80, 24))
     return Size(rows= size.lines, columns= size.columns)
 
@@ -52,11 +62,11 @@ BUILT_INS_COMPLETER = WordCompleter(BUILT_INS)
 HISTFILE = Path(".mshell_history")
 commands_this_session: list[str] = []
 # session = PromptSession(history=InMemoryHistory())
+
+# NOTE: use this version of session variable for a more modern terminal experience
 # session = PromptSession(history=InMemoryHistory(), completer=BUILT_INS_COMPLETER)
-# session = PromptSession(history=InMemoryHistory(), completer=BUILT_INS_COMPLETER, 
-#                         complete_while_typing=False, enable_system_prompt=False)
-# session = PromptSession(history=InMemoryHistory(), completer=BuiltInCompleter(), 
-#                         complete_while_typing=False, enable_cpr=False)
+
+# NOTE: use this version of session variable for a more traditional terminal experience
 session = PromptSession(
     history=InMemoryHistory(), 
     completer=BuiltInCompleter(),
@@ -89,12 +99,6 @@ def save_history() -> None:
         for cmd in commands_this_session:
             file.write(cmd + "\n")
 
-# TODO: FINISH IMPLEMENTATION FOR REDIRECTING
-# def echoHelper(command: list[str]) -> None:
-# def echoHelper(command: list[str], is_redirected: bool) -> None:
-# def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: bool) -> None:
-# def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: bool, 
-#                is_redirected_append: bool) -> None:
 def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: bool, 
                is_redirected_append: bool, is_redirected_append_error: bool) -> None:
     """
@@ -111,8 +115,6 @@ def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: boo
     if is_redirected:
         with open(file_name, "w", encoding="utf-8") as file:
             file.writelines(to_print)
-            # for i in range(1, len(command)):
-            #     file.write(command[i] + " ")
             file.write("\n")
     elif is_redirected_error:
         print(to_print)
@@ -128,13 +130,6 @@ def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: boo
             pass
     else:
         print(to_print)
-
-
-    # print(to_print)
-    # if is_redirected:
-    #     print(to_print)
-    # else:
-    #     pass
 
 def typeHelper(command: list[str]) -> None:
     """
@@ -158,13 +153,6 @@ def typeHelper(command: list[str]) -> None:
         else: # Case: there is no command[1] (i.e. we just have "type " for input)
             print("not found")
 
-# def externalCommandRunnerHelper(command: list[str]) -> bool:
-# def externalCommandRunnerHelper(command: list[str], is_redirected: bool) -> bool:
-# def externalCommandRunnerHelper(command: list[str], is_redirected: bool, 
-#                                 is_redirected_error) -> bool:
-# def externalCommandRunnerHelper(command: list[str], is_redirected: bool, 
-#                                 is_redirected_error: bool, 
-#                                 is_redirected_append: bool) -> bool:
 def externalCommandRunnerHelper(command: list[str], is_redirected: bool, 
                                 is_redirected_error: bool, 
                                 is_redirected_append: bool, 
@@ -176,10 +164,8 @@ def externalCommandRunnerHelper(command: list[str], is_redirected: bool,
     Returns: True if the command was found, false otherwise
        
     """
-    # if is_redirected:
     if is_redirected or is_redirected_error or is_redirected_append or is_redirected_append_error:
         command, file_name = get_command_and_file_from_redirect(command)
-    # print("in external command runner function")
     executable = shutil.which(command[0])
 
     if executable is None:
