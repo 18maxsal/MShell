@@ -6,9 +6,46 @@ from prompt_toolkit import PromptSession
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.completion import WordCompleter
+from prompt_toolkit.completion import Completer, Completion
+
+from prompt_toolkit.output import Output
+from prompt_toolkit.output import create_output
+from prompt_toolkit.output.vt100 import Vt100_Output
+from prompt_toolkit.data_structures import Size
+from prompt_toolkit.shortcuts import CompleteStyle
 
 import shutil
 
+class BuiltInCompleter(Completer):
+    def get_completions(self, document, complete_event):
+        text=  document.text_before_cursor
+
+        if " " in text:
+            return
+        
+        matches = [cmd for cmd in BUILT_INS if cmd.startswith(text)]
+
+        if len(matches) == 1: 
+            match = matches[0]
+            yield Completion(
+                match + " ", 
+                start_position =- len(text)
+            )
+
+def get_terminal_size():
+    size = shutil.get_terminal_size((80, 24))
+    return Size(rows= size.lines, columns= size.columns)
+
+if os.name == "nt":
+    output = create_output()
+
+else:
+    output = Vt100_Output (
+        stdout=sys.stdout,
+        get_size=get_terminal_size,
+        term=os.environ.get("TERM"),
+        enable_cpr=False,
+    )
 
 BUILT_INS = ["echo", "exit", "type", "pwd", "cd", "history"]
 BUILT_INS_COMPLETER = WordCompleter(BUILT_INS)
@@ -16,8 +53,18 @@ HISTFILE = Path(".mshell_history")
 commands_this_session: list[str] = []
 # session = PromptSession(history=InMemoryHistory())
 # session = PromptSession(history=InMemoryHistory(), completer=BUILT_INS_COMPLETER)
-session = PromptSession(history=InMemoryHistory(), completer=BUILT_INS_COMPLETER, 
-                        complete_while_typing=False, enable_system_prompt=False)
+# session = PromptSession(history=InMemoryHistory(), completer=BUILT_INS_COMPLETER, 
+#                         complete_while_typing=False, enable_system_prompt=False)
+# session = PromptSession(history=InMemoryHistory(), completer=BuiltInCompleter(), 
+#                         complete_while_typing=False, enable_cpr=False)
+session = PromptSession(
+    history=InMemoryHistory(), 
+    completer=BuiltInCompleter(),
+    complete_while_typing=False, 
+    complete_style=CompleteStyle.READLINE_LIKE,
+    reserve_space_for_menu=0, 
+    output=output
+)
 history_append_start_pointer = 0
 history_loaded_start_pointer = 0
 
