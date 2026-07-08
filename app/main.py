@@ -2,6 +2,7 @@ import sys
 import os
 import subprocess
 from pathlib import Path
+import shutil
 from prompt_toolkit import PromptSession
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.history import InMemoryHistory
@@ -14,7 +15,33 @@ from prompt_toolkit.output.vt100 import Vt100_Output
 from prompt_toolkit.data_structures import Size
 from prompt_toolkit.shortcuts import CompleteStyle
 
-import shutil
+from prompt_toolkit.key_binding import KeyBindings
+
+kb = KeyBindings()
+
+@kb.add("tab")
+def _(event):
+    buffer = event.current_buffer
+    text = buffer.document.text_before_cursor
+
+    if " " in text:
+        event.app.output.bell()
+        return
+    
+    matches = [cmd for cmd in BUILT_INS if cmd.startswith(text)]
+
+    if len(matches) == 0:
+        event.app.output.bell()
+    
+    if len(matches) == 1:
+        match = matches[0]
+
+        buffer.delete_before_cursor(count=len(text))
+        buffer.insert_text(match + " ")
+        return
+    
+
+    # buffer.start_completion(select_first=False)
 
 class BuiltInCompleter(Completer):
     """
@@ -67,14 +94,25 @@ commands_this_session: list[str] = []
 # session = PromptSession(history=InMemoryHistory(), completer=BUILT_INS_COMPLETER)
 
 # NOTE: use this version of session variable for a more traditional terminal experience
+# session = PromptSession(
+#     history=InMemoryHistory(), 
+#     completer=BuiltInCompleter(),
+#     complete_while_typing=False, 
+#     complete_style=CompleteStyle.READLINE_LIKE,
+#     reserve_space_for_menu=0, 
+#     output=output
+# )
 session = PromptSession(
     history=InMemoryHistory(), 
     completer=BuiltInCompleter(),
     complete_while_typing=False, 
     complete_style=CompleteStyle.READLINE_LIKE,
     reserve_space_for_menu=0, 
-    output=output
+    output=output, 
+    key_bindings=kb
 )
+
+
 history_append_start_pointer = 0
 history_loaded_start_pointer = 0
 
