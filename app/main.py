@@ -16,9 +16,13 @@ from prompt_toolkit.data_structures import Size
 from prompt_toolkit.shortcuts import CompleteStyle
 
 from prompt_toolkit.key_binding import KeyBindings
+from prompt_toolkit.application import run_in_terminal
+
 
 BUILT_INS = ["echo", "exit", "type", "pwd", "cd", "history"]
 kb = KeyBindings()
+last_tab_text = None
+last_tab_matches = []
 
 @kb.add("tab")
 def _(event):
@@ -27,11 +31,14 @@ def _(event):
 
     TODO: Learn more about what this does
     """
+    global last_tab_text, last_tab_matches
     buffer = event.current_buffer
     text = buffer.document.text_before_cursor
 
     if " " in text:
         event.app.output.bell()
+        last_tab_text = None
+        last_tab_matches = []
         return
     
     # matches = [cmd for cmd in BUILT_INS if cmd.startswith(text)]
@@ -39,6 +46,9 @@ def _(event):
 
     if len(matches) == 0:
         event.app.output.bell()
+        last_tab_text = None
+        last_tab_matches = []
+        return
     
     if len(matches) == 1:
         # match = matches[0]
@@ -46,18 +56,40 @@ def _(event):
         buffer.delete_before_cursor(count=len(text))
         # buffer.insert_text(match + " ")
         buffer.insert_text(matches[0] + " ")
+        last_tab_text = None
+        last_tab_matches = []
         return
     
+    # Multiple Matches
+    if text == last_tab_text and matches == last_tab_matches:
+        print_matches(matches)
+        last_tab_text = None
+        last_tab_matches = []
+        return
+
     common_prefix = os.path.commonprefix(matches)
 
     if len(common_prefix) > len(text):
         buffer.delete_before_cursor(count = len(text))
         buffer.insert_text(common_prefix)
-        
+
+        last_tab_text = common_prefix
+        last_tab_matches = get_command_matches(common_prefix)
+        return
+
     event.app.output.bell()
+    last_tab_text = text
+    last_tab_matches = matches
     
 
     # buffer.start_completion(select_first=False)
+
+def print_matches(matches: list[str]) -> None:
+    def printer():
+        # print()
+        print(" ".join(sorted(matches)))
+    run_in_terminal(printer)
+
 
 def get_executables_from_path() -> set[str]:
     executables = set()
