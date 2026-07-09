@@ -21,6 +21,11 @@ kb = KeyBindings()
 
 @kb.add("tab")
 def _(event):
+    """
+    TODO: Fill in method description here
+
+    TODO: Learn more about what this does
+    """
     buffer = event.current_buffer
     text = buffer.document.text_before_cursor
 
@@ -48,6 +53,39 @@ class BuiltInCompleter(Completer):
     TODO: fill in class definition here
     """
 
+    def get_executables_from_path() -> set[str]:
+        executables = set()
+
+        path_env= os.environ.get("PATH", "")
+
+        for directory in path_env.split(os.pathsep):
+            if not directory:
+                continue
+
+            try:
+                for name in os.listdir(directory):
+                    full_path = os.path.join(directory, name)
+
+                    if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
+                        executables.add(name)
+            
+            except FileNotFoundError:
+                continue
+            except NotADirectoryError:
+                continue
+            except PermissionError:
+                continue
+        
+        return executables
+    
+
+    def get_command_matches(self, prefix: str) -> list[str]:
+        commands = set(BUILT_INS)
+        commands.update(self.get_executables_from_path())
+
+        return sorted(cmd for cmd in commands if cmd.startswith(prefix))
+
+
     def get_completions(self, document, complete_event):
         """
         TODO: fill in method definition here
@@ -57,7 +95,8 @@ class BuiltInCompleter(Completer):
         if " " in text:
             return
         
-        matches = [cmd for cmd in BUILT_INS if cmd.startswith(text)]
+        # matches = [cmd for cmd in BUILT_INS if cmd.startswith(text)]
+        matches = self.get_command_matches(text)
 
         if len(matches) == 1: 
             match = matches[0]
@@ -88,6 +127,7 @@ BUILT_INS = ["echo", "exit", "type", "pwd", "cd", "history"]
 BUILT_INS_COMPLETER = WordCompleter(BUILT_INS)
 HISTFILE = Path(".mshell_history")
 commands_this_session: list[str] = []
+
 # session = PromptSession(history=InMemoryHistory())
 
 # NOTE: use this version of session variable for a more modern terminal experience
