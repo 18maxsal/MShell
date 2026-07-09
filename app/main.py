@@ -17,6 +17,7 @@ from prompt_toolkit.shortcuts import CompleteStyle
 
 from prompt_toolkit.key_binding import KeyBindings
 
+BUILT_INS = ["echo", "exit", "type", "pwd", "cd", "history"]
 kb = KeyBindings()
 
 @kb.add("tab")
@@ -33,58 +34,60 @@ def _(event):
         event.app.output.bell()
         return
     
-    matches = [cmd for cmd in BUILT_INS if cmd.startswith(text)]
+    # matches = [cmd for cmd in BUILT_INS if cmd.startswith(text)]
+    matches = get_command_matches(text)
 
     if len(matches) == 0:
         event.app.output.bell()
     
     if len(matches) == 1:
-        match = matches[0]
+        # match = matches[0]
 
         buffer.delete_before_cursor(count=len(text))
-        buffer.insert_text(match + " ")
+        # buffer.insert_text(match + " ")
+        buffer.insert_text(matches[0] + " ")
         return
     
 
     # buffer.start_completion(select_first=False)
 
+def get_executables_from_path() -> set[str]:
+    executables = set()
+
+    path_env= os.environ.get("PATH", "")
+
+    for directory in path_env.split(os.pathsep):
+        if not directory:
+            continue
+
+        try:
+            for name in os.listdir(directory):
+                full_path = os.path.join(directory, name)
+
+                if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
+                    executables.add(name)
+        
+        except FileNotFoundError:
+            continue
+        except NotADirectoryError:
+            continue
+        except PermissionError:
+            continue
+    
+    return executables
+
+
+def get_command_matches(prefix: str) -> list[str]:
+    commands = set(BUILT_INS)
+    commands.update(get_executables_from_path())
+
+    return sorted(cmd for cmd in commands if cmd.startswith(prefix))
+
+
 class BuiltInCompleter(Completer):
     """
     TODO: fill in class definition here
     """
-
-    def get_executables_from_path() -> set[str]:
-        executables = set()
-
-        path_env= os.environ.get("PATH", "")
-
-        for directory in path_env.split(os.pathsep):
-            if not directory:
-                continue
-
-            try:
-                for name in os.listdir(directory):
-                    full_path = os.path.join(directory, name)
-
-                    if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-                        executables.add(name)
-            
-            except FileNotFoundError:
-                continue
-            except NotADirectoryError:
-                continue
-            except PermissionError:
-                continue
-        
-        return executables
-    
-
-    def get_command_matches(self, prefix: str) -> list[str]:
-        commands = set(BUILT_INS)
-        commands.update(self.get_executables_from_path())
-
-        return sorted(cmd for cmd in commands if cmd.startswith(prefix))
-
 
     def get_completions(self, document, complete_event):
         """
@@ -95,13 +98,14 @@ class BuiltInCompleter(Completer):
         if " " in text:
             return
         
-        # matches = [cmd for cmd in BUILT_INS if cmd.startswith(text)]
-        matches = self.get_command_matches(text)
+        matches = [cmd for cmd in BUILT_INS if cmd.startswith(text)]
+        # matches = self.get_command_matches(text)
 
         if len(matches) == 1: 
             match = matches[0]
             yield Completion(
                 match + " ", 
+                # matches[0] + " ",
                 start_position =- len(text)
             )
 
@@ -123,7 +127,7 @@ else:
         enable_cpr=False,
     )
 
-BUILT_INS = ["echo", "exit", "type", "pwd", "cd", "history"]
+# BUILT_INS = ["echo", "exit", "type", "pwd", "cd", "history"]
 BUILT_INS_COMPLETER = WordCompleter(BUILT_INS)
 HISTFILE = Path(".mshell_history")
 commands_this_session: list[str] = []
