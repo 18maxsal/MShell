@@ -48,6 +48,14 @@ def _(event):
         buffer.insert_text(matches[0] + " ")
         return
     
+    common_prefix = os.path.commonprefix(matches)
+
+    if len(common_prefix) > len(text):
+        buffer.delete_before_cursor(count = len(text))
+        buffer.insert_text(common_prefix)
+        
+    event.app.output.bell()
+    
 
     # buffer.start_completion(select_first=False)
 
