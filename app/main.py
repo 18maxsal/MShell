@@ -62,7 +62,8 @@ def _(event):
     
     # Multiple Matches
     if text == last_tab_text and matches == last_tab_matches:
-        print_matches(matches)
+        # print_matches(matches)
+        print_matches(matches, text)
         last_tab_text = None
         last_tab_matches = []
         return
@@ -84,9 +85,11 @@ def _(event):
 
     # buffer.start_completion(select_first=False)
 
-def print_matches(matches: list[str]) -> None:
+# def print_matches(matches: list[str]) -> None:
+def print_matches(matches: list[str], current_text: str) -> None:
     def printer():
         # print()
+        print(f"$ {current_text}")
         print(" ".join(sorted(matches)))
     run_in_terminal(printer)
 
