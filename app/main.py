@@ -87,14 +87,23 @@ def _(event):
 
 # def print_matches(matches: list[str]) -> None:
 def print_matches(matches: list[str], current_text: str) -> None:
+    """
+    TODO: Fill in method description here
+    """
     def printer():
-        # print()
+        """
+        TODO: Fill in method description here
+        """
+
         print(f"$ {current_text}")
         print(" ".join(sorted(matches)))
     run_in_terminal(printer)
 
 
 def get_executables_from_path() -> set[str]:
+    """
+    TODO: Fill in method description here
+    """
     executables = set()
 
     path_env= os.environ.get("PATH", "")
@@ -121,6 +130,9 @@ def get_executables_from_path() -> set[str]:
 
 
 def get_command_matches(prefix: str) -> list[str]:
+    """
+    TODO: Fill in method description here
+    """
     commands = set(BUILT_INS)
     commands.update(get_executables_from_path())
 
@@ -278,10 +290,14 @@ def typeHelper(command: list[str]) -> None:
         else: # Case: there is no command[1] (i.e. we just have "type " for input)
             print("not found")
 
+# def externalCommandRunnerHelper(command: list[str], is_redirected: bool, 
+#                                 is_redirected_error: bool, 
+#                                 is_redirected_append: bool, 
+#                                 is_redirected_append_error: bool) -> bool:
 def externalCommandRunnerHelper(command: list[str], is_redirected: bool, 
                                 is_redirected_error: bool, 
                                 is_redirected_append: bool, 
-                                is_redirected_append_error: bool) -> bool:
+                                is_redirected_append_error: bool) -> str:
     """
     Handles the logic for running non-built-in files/commands
     if they exist.
@@ -294,7 +310,8 @@ def externalCommandRunnerHelper(command: list[str], is_redirected: bool,
     executable = shutil.which(command[0])
 
     if executable is None:
-        return False
+        # return False
+        return ""
     
     if is_redirected:
         with open(file_name, "w", encoding="utf-8") as file:
@@ -309,11 +326,15 @@ def externalCommandRunnerHelper(command: list[str], is_redirected: bool,
     elif is_redirected_append_error:
         with open(file_name, "a", encoding="utf-8") as file:
             subprocess.run(command, stderr=file)
+    
+    # Not redirecting anywhere
     else:
-        subprocess.run(command)
+        # subprocess.run(command)
+        return subprocess.run(command)
     # subprocess.run([executable] + command[1:])
     # subprocess.run(command)
-    return True
+    # return True
+    return "Valid Output"
 
 def pwdHelper() -> None:
     """Prints current working directory"""
@@ -585,6 +606,21 @@ def string_parser(command: str) -> list[str]:
         
     return args
 
+def pipeline_parser(command: list[str]) -> list[list[str]]:
+    """
+    TODO: Fill in function defintion here
+    """
+
+    to_return = []
+    try: 
+        pipeline_index = command.index("|")
+        # to_return.append([])
+        to_return = [command[:pipeline_index], command[pipeline_index + 1:]]
+        return to_return
+
+    except ValueError:
+        return to_return
+
 def get_command_and_file_from_redirect(command: list[str]) -> tuple[list[str], str]:
     """
     Extracts the destination file name when we wish to have our output
@@ -593,6 +629,56 @@ def get_command_and_file_from_redirect(command: list[str]) -> tuple[list[str], s
     command_to_return = command[:-2]
     file = command[-1] 
     return (command_to_return, file)
+
+def main_loop_handler(command: list[str], is_redirected: bool, is_redirected_error: bool, 
+                      is_redirected_append: bool, is_redirected_append_error: bool) -> None:
+    if command[0] == "echo":
+        # echoHelper(command = command)
+        # echoHelper(command = command, is_redirected= is_redirected)
+        # echoHelper(command = command, is_redirected= is_redirected, 
+        #            is_redirected_error= is_redirected_error)
+        # echoHelper(command = command, is_redirected= is_redirected, 
+        #            is_redirected_error= is_redirected_error, 
+        #            is_redirected_append= is_redirected_append)
+        echoHelper(command = command, is_redirected= is_redirected, 
+                    is_redirected_error= is_redirected_error, 
+                    is_redirected_append= is_redirected_append, 
+                    is_redirected_append_error= is_redirected_append_error)
+        
+    elif command[0] == "type":
+        typeHelper(command = command)
+    
+    elif command[0] == "pwd":
+        pwdHelper()
+    
+    elif command[0] == "cd":
+        changeDirectoryHelper(command = command)
+    
+    elif command[0] == "history":
+        historyHelper(args = command)
+    
+    else:
+        # if not externalCommandRunnerHelper(command = command):
+        # if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected):
+        # if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected, 
+        #                                    is_redirected_error=is_redirected_error):
+        # if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected, 
+        #                                    is_redirected_error=is_redirected_error, 
+        #                                    is_redirected_append=is_redirected_append):
+        output_from_external_command = externalCommandRunnerHelper(command = command, is_redirected= is_redirected, 
+                                            is_redirected_error=is_redirected_error, 
+                                            is_redirected_append=is_redirected_append, 
+                                            is_redirected_append_error=is_redirected_append_error)
+        if not output_from_external_command:
+        # if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected, 
+        #                                     is_redirected_error=is_redirected_error, 
+        #                                     is_redirected_append=is_redirected_append, 
+        #                                     is_redirected_append_error=is_redirected_append_error):
+            print(f"{command[0]}: command not found")
+        else:
+            print(output_from_external_command)
+    sys.stdout.flush()
+
 
 def main():
     """
@@ -652,51 +738,71 @@ def main():
             is_redirected_append = True
         elif "2>>" in command:
             is_redirected_append_error = True
-        # TODO: change functions above to support redirecting errors to a file
+
+        is_pipe = False
+        if "|" in command:
+            is_pipe = True
+            commands = pipeline_parser(command)
+            # print(commands)
+            if not commands:
+                print("Error with input")
+                continue
 
         if command[0] == "exit":
             break
-        elif command[0] == "echo":
-            # echoHelper(command = command)
-            # echoHelper(command = command, is_redirected= is_redirected)
-            # echoHelper(command = command, is_redirected= is_redirected, 
-            #            is_redirected_error= is_redirected_error)
-            # echoHelper(command = command, is_redirected= is_redirected, 
-            #            is_redirected_error= is_redirected_error, 
-            #            is_redirected_append= is_redirected_append)
-            echoHelper(command = command, is_redirected= is_redirected, 
-                       is_redirected_error= is_redirected_error, 
-                       is_redirected_append= is_redirected_append, 
-                       is_redirected_append_error= is_redirected_append_error)
-            
-        elif command[0] == "type":
-            typeHelper(command = command)
-        
-        elif command[0] == "pwd":
-            pwdHelper()
-        
-        elif command[0] == "cd":
-            changeDirectoryHelper(command = command)
-        
-        elif command[0] == "history":
-            historyHelper(args = command)
-        
+        elif "|" in command:
+            commands = pipeline_parser(command)
         else:
-            # if not externalCommandRunnerHelper(command = command):
-            # if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected):
-            # if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected, 
-            #                                    is_redirected_error=is_redirected_error):
-            # if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected, 
-            #                                    is_redirected_error=is_redirected_error, 
-            #                                    is_redirected_append=is_redirected_append):
-            if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected, 
-                                               is_redirected_error=is_redirected_error, 
-                                               is_redirected_append=is_redirected_append, 
-                                               is_redirected_append_error=is_redirected_append_error):
-                print(f"{command[0]}: command not found")
-            else:
-                pass
-        sys.stdout.flush()
+            main_loop_handler(command=command, 
+                              is_redirected=is_redirected,
+                              is_redirected_error=is_redirected_error, 
+                              is_redirected_append=is_redirected_append, 
+                              is_redirected_append_error=is_redirected_append_error)
+            
+        # if command[0] == "exit":
+        #     break
+        # elif command[0] == "echo":
+        #     # echoHelper(command = command)
+        #     # echoHelper(command = command, is_redirected= is_redirected)
+        #     # echoHelper(command = command, is_redirected= is_redirected, 
+        #     #            is_redirected_error= is_redirected_error)
+        #     # echoHelper(command = command, is_redirected= is_redirected, 
+        #     #            is_redirected_error= is_redirected_error, 
+        #     #            is_redirected_append= is_redirected_append)
+        #     echoHelper(command = command, is_redirected= is_redirected, 
+        #                is_redirected_error= is_redirected_error, 
+        #                is_redirected_append= is_redirected_append, 
+        #                is_redirected_append_error= is_redirected_append_error)
+            
+        # elif command[0] == "type":
+        #     typeHelper(command = command)
+        
+        # elif command[0] == "pwd":
+        #     pwdHelper()
+        
+        # elif command[0] == "cd":
+        #     changeDirectoryHelper(command = command)
+        
+        # elif command[0] == "history":
+        #     historyHelper(args = command)
+        
+        # else:
+        #     # if not externalCommandRunnerHelper(command = command):
+        #     # if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected):
+        #     # if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected, 
+        #     #                                    is_redirected_error=is_redirected_error):
+        #     # if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected, 
+        #     #                                    is_redirected_error=is_redirected_error, 
+        #     #                                    is_redirected_append=is_redirected_append):
+        #     if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected, 
+        #                                        is_redirected_error=is_redirected_error, 
+        #                                        is_redirected_append=is_redirected_append, 
+        #                                        is_redirected_append_error=is_redirected_append_error):
+        #         print(f"{command[0]}: command not found")
+        #     else:
+        #         pass
+        # sys.stdout.flush()
+
     # save_history() # May not need
     append_new_history_to_file()
 
