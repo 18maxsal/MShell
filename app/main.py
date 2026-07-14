@@ -236,8 +236,10 @@ def save_history() -> None:
         for cmd in commands_this_session:
             file.write(cmd + "\n")
 
+# def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: bool, 
+#                is_redirected_append: bool, is_redirected_append_error: bool) -> None:
 def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: bool, 
-               is_redirected_append: bool, is_redirected_append_error: bool) -> None:
+               is_redirected_append: bool, is_redirected_append_error: bool) -> str:
     """
     Handles the logic for the 'echo' built-in.
     Prints the given string to output.
@@ -262,11 +264,15 @@ def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: boo
             file.writelines(to_print)
             file.write("\n") # may or may not need
     elif is_redirected_append_error:
-        print(to_print)
+        # print(to_print)
         with open(file_name, "a", encoding="utf-8") as file:
             pass
+        return to_print
     else:
-        print(to_print)
+        # print(to_print)
+        return to_print
+    # return "Valid input"
+    return to_print
 
 def typeHelper(command: list[str]) -> None:
     """
@@ -631,7 +637,7 @@ def get_command_and_file_from_redirect(command: list[str]) -> tuple[list[str], s
     return (command_to_return, file)
 
 def main_loop_handler(command: list[str], is_redirected: bool, is_redirected_error: bool, 
-                      is_redirected_append: bool, is_redirected_append_error: bool) -> None:
+                      is_redirected_append: bool, is_redirected_append_error: bool) -> str:
     if command[0] == "echo":
         # echoHelper(command = command)
         # echoHelper(command = command, is_redirected= is_redirected)
@@ -640,10 +646,15 @@ def main_loop_handler(command: list[str], is_redirected: bool, is_redirected_err
         # echoHelper(command = command, is_redirected= is_redirected, 
         #            is_redirected_error= is_redirected_error, 
         #            is_redirected_append= is_redirected_append)
-        echoHelper(command = command, is_redirected= is_redirected, 
+        # echoHelper(command = command, is_redirected= is_redirected, 
+        #             is_redirected_error= is_redirected_error, 
+        #             is_redirected_append= is_redirected_append, 
+        #             is_redirected_append_error= is_redirected_append_error)
+        to_return = echoHelper(command = command, is_redirected= is_redirected, 
                     is_redirected_error= is_redirected_error, 
                     is_redirected_append= is_redirected_append, 
                     is_redirected_append_error= is_redirected_append_error)
+        return to_return
         
     elif command[0] == "type":
         typeHelper(command = command)
@@ -676,7 +687,8 @@ def main_loop_handler(command: list[str], is_redirected: bool, is_redirected_err
         #                                     is_redirected_append_error=is_redirected_append_error):
             print(f"{command[0]}: command not found")
         else:
-            print(output_from_external_command)
+            # print(output_from_external_command)
+            return output_from_external_command
     sys.stdout.flush()
 
 
@@ -739,21 +751,47 @@ def main():
         elif "2>>" in command:
             is_redirected_append_error = True
 
-        is_pipe = False
-        if "|" in command:
-            is_pipe = True
-            commands = pipeline_parser(command)
-            # print(commands)
-            if not commands:
-                print("Error with input")
-                continue
+        # is_pipe = False
+        # if "|" in command:
+        #     is_pipe = True
+        #     commands = pipeline_parser(command)
+        #     # print(commands)
+        #     if not commands:
+        #         print("Error with input")
+        #         continue
 
         if command[0] == "exit":
             break
-        elif "|" in command:
+
+        # Using a pipeline
+        if "|" in command:
             commands = pipeline_parser(command)
+            if not commands:
+                print("Error with input.")
+                continue
+            print(commands)
+            prev_command_output = ""
+            for cmd in commands:
+                if not prev_command_output:
+                    cmd.append(prev_command_output)
+                    result = main_loop_handler(command=cmd, 
+                                  is_redirected=is_redirected, 
+                                  is_redirected_error=is_redirected_error, 
+                                  is_redirected_append=is_redirected_append, 
+                                  is_redirected_append_error=is_redirected_append_error)
+                    # prev_command_output = result
+                    prev_command_output = result
+                else:
+                    result = main_loop_handler(command=cmd, 
+                                    is_redirected=is_redirected, 
+                                    is_redirected_error=is_redirected_error, 
+                                    is_redirected_append=is_redirected_append, 
+                                    is_redirected_append_error=is_redirected_append_error)
+                    prev_command_output = result
+            print(prev_command_output)
+
         else:
-            main_loop_handler(command=command, 
+            result = main_loop_handler(command=command, 
                               is_redirected=is_redirected,
                               is_redirected_error=is_redirected_error, 
                               is_redirected_append=is_redirected_append, 
