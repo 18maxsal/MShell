@@ -769,7 +769,7 @@ def main():
             if not commands:
                 print("Error with input.")
                 continue
-            print(commands)
+            # print(commands)
             prev_command_output = ""
             for cmd in commands:
                 if not prev_command_output:
