@@ -336,7 +336,7 @@ def externalCommandRunnerHelper(command: list[str], is_redirected: bool,
     # Not redirecting anywhere
     else:
         # subprocess.run(command)
-        return subprocess.run(command, capture_output=True)
+        return subprocess.run(command)
     # subprocess.run([executable] + command[1:])
     # subprocess.run(command)
     # return True
