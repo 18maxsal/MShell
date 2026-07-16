@@ -617,15 +617,58 @@ def pipeline_parser(command: list[str]) -> list[list[str]]:
     TODO: Fill in function defintion here
     """
 
-    to_return = []
-    try: 
-        pipeline_index = command.index("|")
-        # to_return.append([])
-        to_return = [command[:pipeline_index], command[pipeline_index + 1:]]
-        return to_return
+    commands = []
+    current_command = []
 
-    except ValueError:
-        return to_return
+    for token in command:
+        if token == "|":
+            if not current_command:
+                return []
+            commands.append(current_command)
+            current_command = []
+        else:
+            current_command.append(token)
+    
+    if not current_command:
+        return []
+    commands.append(current_command)
+    return commands
+
+
+    # to_return = []
+    # try: 
+    #     pipeline_index = command.index("|")
+    #     # to_return.append([])
+    #     to_return = [command[:pipeline_index], command[pipeline_index + 1:]]
+    #     return to_return
+
+    # except ValueError:
+    #     return to_return
+
+def run_pipeline_command(command: list[str], input_text: str | None) -> str | None:
+    if not command:
+        return None
+
+    # TODO: Add functionality for builtins later
+
+    executable = shutil.which(command[0])
+
+    # Command was not found
+    if executable is None:
+        return None
+    
+    result = subprocess.run(
+        command, 
+        input=input_text, 
+        stdout=subprocess.PIPE, 
+        stderr=subprocess.PIPE, 
+        text=True
+    )
+
+    if result.stderr:
+        print(result.stderr, end="", file=sys.stderr)
+
+    return result.stdout
 
 def get_command_and_file_from_redirect(command: list[str]) -> tuple[list[str], str]:
     """
@@ -770,25 +813,32 @@ def main():
                 print("Error with input.")
                 continue
             # print(commands)
+            # break
             prev_command_output = ""
             for cmd in commands:
-                if not prev_command_output:
-                    cmd.append(prev_command_output)
-                    result = main_loop_handler(command=cmd, 
-                                  is_redirected=is_redirected, 
-                                  is_redirected_error=is_redirected_error, 
-                                  is_redirected_append=is_redirected_append, 
-                                  is_redirected_append_error=is_redirected_append_error)
-                    # prev_command_output = result
-                    prev_command_output = result
-                else:
-                    result = main_loop_handler(command=cmd, 
-                                    is_redirected=is_redirected, 
-                                    is_redirected_error=is_redirected_error, 
-                                    is_redirected_append=is_redirected_append, 
-                                    is_redirected_append_error=is_redirected_append_error)
-                    prev_command_output = result
-            print(prev_command_output)
+                prev_command_output = run_pipeline_command(cmd, prev_command_output)
+                if prev_command_output is None:
+                    break
+            if prev_command_output is not None:
+                print(prev_command_output, end="")
+            continue
+            #     if not prev_command_output:
+            #         result = main_loop_handler(command=cmd, 
+            #                       is_redirected=is_redirected, 
+            #                       is_redirected_error=is_redirected_error, 
+            #                       is_redirected_append=is_redirected_append, 
+            #                       is_redirected_append_error=is_redirected_append_error)
+            #         # prev_command_output = result
+            #         cmd.append(prev_command_output)
+            #         prev_command_output = result
+            #     else:
+            #         result = main_loop_handler(command=cmd, 
+            #                         is_redirected=is_redirected, 
+            #                         is_redirected_error=is_redirected_error, 
+            #                         is_redirected_append=is_redirected_append, 
+            #                         is_redirected_append_error=is_redirected_append_error)
+            #         prev_command_output = result
+            # print(prev_command_output)
 
         else:
             result = main_loop_handler(command=command, 
@@ -796,6 +846,7 @@ def main():
                               is_redirected_error=is_redirected_error, 
                               is_redirected_append=is_redirected_append, 
                               is_redirected_append_error=is_redirected_append_error)
+            print(result)
             
         # if command[0] == "exit":
         #     break
