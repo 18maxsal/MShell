@@ -754,6 +754,8 @@ def main_loop_handler(command: list[str], is_redirected: bool, is_redirected_err
         # else:
         #     # print(output_from_external_command)
         #     return is_external_command_found
+        else:
+            return is_external_command_found
     sys.stdout.flush()
 
 
