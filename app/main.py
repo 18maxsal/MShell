@@ -656,6 +656,7 @@ def run_pipeline_command(command1: str, command2: str) -> str | None:
     executable1 = shutil.which(command1[0])
     executable2 = shutil.which(command2[0])
     if not executable1 or not executable2:
+        print("Error with finding one or more commands")
         return None
     result1 = subprocess.Popen(command1, stdout=subprocess.PIPE)
     result2 = subprocess.Popen(command2, stdin=result1.stdout, stdout=subprocess.PIPE)
