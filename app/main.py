@@ -649,6 +649,8 @@ def pipeline_parser(command: list[str]) -> list[list[str]]:
     #     return to_return
 
 def run_pipeline_command(command1: str, command2: str) -> str | None:
+    print(command1)
+    print(command2)
     if not command1 or not command2:
         return None
     executable1 = shutil.which(command1)
