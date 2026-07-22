@@ -239,7 +239,7 @@ def save_history() -> None:
 # def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: bool, 
 #                is_redirected_append: bool, is_redirected_append_error: bool) -> None:
 def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: bool, 
-               is_redirected_append: bool, is_redirected_append_error: bool) -> str:
+               is_redirected_append: bool, is_redirected_append_error: bool) -> str | None:
     """
     Handles the logic for the 'echo' built-in.
     Prints the given string to output.
@@ -269,8 +269,8 @@ def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: boo
             pass
         return to_print
     else:
-        # print(to_print)
-        return to_print
+        print(to_print)
+        # return to_print
     # return "Valid input"
     return to_print
 
@@ -303,7 +303,7 @@ def typeHelper(command: list[str]) -> None:
 def externalCommandRunnerHelper(command: list[str], is_redirected: bool, 
                                 is_redirected_error: bool, 
                                 is_redirected_append: bool, 
-                                is_redirected_append_error: bool) -> str:
+                                is_redirected_append_error: bool) -> bool:
     """
     Handles the logic for running non-built-in files/commands
     if they exist.
@@ -335,18 +335,21 @@ def externalCommandRunnerHelper(command: list[str], is_redirected: bool,
     
     # Not redirecting anywhere
     else:
-        # subprocess.run(command)
-        return subprocess.run(command)
+        subprocess.run(command)
+        # return subprocess.run(command)
     # subprocess.run([executable] + command[1:])
     # subprocess.run(command)
-    # return True
-    return "Valid Output"
+    return True
+    # return "Valid Output"
 
-def pwdHelper() -> None:
+# def pwdHelper() -> None:
+def pwdHelper() -> str:
     """Prints current working directory"""
     print(Path.cwd())
+    # return str(Path.cwd())
+    return Path.cwd()
 
-def changeDirectoryHelper(command: list[str]) -> None:
+def changeDirectoryHelper(command: list[str]) -> str | None:
     """
     Handles logic for changing the current working directory
     
@@ -401,7 +404,7 @@ def rebuild_prompt_memory() -> None:
     copy of each command used this session in chronological order
     (i.e. oldest to newest)
     """
-    global session # May need to comment in later
+    global session 
     navigator_history = unique_history_navigator_helper(commands_this_session)
 
     new_history = InMemoryHistory()
@@ -646,6 +649,9 @@ def pipeline_parser(command: list[str]) -> list[list[str]]:
     #     return to_return
 
 def run_pipeline_command(command: list[str], input_text: str | None) -> str | None:
+    """
+    
+    """
     if not command:
         return None
 
@@ -703,7 +709,8 @@ def main_loop_handler(command: list[str], is_redirected: bool, is_redirected_err
         typeHelper(command = command)
     
     elif command[0] == "pwd":
-        pwdHelper()
+        # pwdHelper()
+        return pwdHelper()
     
     elif command[0] == "cd":
         changeDirectoryHelper(command = command)
@@ -719,19 +726,19 @@ def main_loop_handler(command: list[str], is_redirected: bool, is_redirected_err
         # if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected, 
         #                                    is_redirected_error=is_redirected_error, 
         #                                    is_redirected_append=is_redirected_append):
-        output_from_external_command = externalCommandRunnerHelper(command = command, is_redirected= is_redirected, 
+        is_external_command_found = externalCommandRunnerHelper(command = command, is_redirected= is_redirected, 
                                             is_redirected_error=is_redirected_error, 
                                             is_redirected_append=is_redirected_append, 
                                             is_redirected_append_error=is_redirected_append_error)
-        if not output_from_external_command:
+        if not is_external_command_found:
         # if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected, 
         #                                     is_redirected_error=is_redirected_error, 
         #                                     is_redirected_append=is_redirected_append, 
         #                                     is_redirected_append_error=is_redirected_append_error):
             print(f"{command[0]}: command not found")
-        else:
-            # print(output_from_external_command)
-            return output_from_external_command
+        # else:
+        #     # print(output_from_external_command)
+        #     return is_external_command_found
     sys.stdout.flush()
 
 
@@ -814,7 +821,7 @@ def main():
                 continue
             # print(commands)
             # break
-            prev_command_output = ""
+            prev_command_output = None
             for cmd in commands:
                 prev_command_output = run_pipeline_command(cmd, prev_command_output)
                 if prev_command_output is None:
@@ -846,7 +853,7 @@ def main():
                               is_redirected_error=is_redirected_error, 
                               is_redirected_append=is_redirected_append, 
                               is_redirected_append_error=is_redirected_append_error)
-            print(result)
+            # print(result)
             
         # if command[0] == "exit":
         #     break
