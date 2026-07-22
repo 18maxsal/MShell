@@ -272,7 +272,7 @@ def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: boo
         print(to_print)
         # return to_print
     # return "Valid input"
-    return to_print
+    # return to_print
 
 def typeHelper(command: list[str]) -> None:
     """
@@ -648,33 +648,42 @@ def pipeline_parser(command: list[str]) -> list[list[str]]:
     # except ValueError:
     #     return to_return
 
-def run_pipeline_command(command: list[str], input_text: str | None) -> str | None:
-    """
-    
-    """
-    if not command:
+def run_pipeline_command(command1: str, command2: str) -> str | None:
+    if not command1 or not command2:
         return None
-
-    # TODO: Add functionality for builtins later
-
-    executable = shutil.which(command[0])
-
-    # Command was not found
-    if executable is None:
-        return None
+    executable1 = shutil.which(command1)
+    executable2 = shutil.which(command2)
+    result1 = subprocess.Popen(command1, stdout=subprocess.PIPE)
+    result2 = subprocess.Popen(command2, stdin=result1.stdout, stdout=subprocess.PIPE)
+    result1.stdout.close()
+    pipeline_output, error = result2.communicate()
+# def run_pipeline_command(command: list[str], input_text: str | None) -> str | None:
+    # """
     
-    result = subprocess.run(
-        command, 
-        input=input_text, 
-        stdout=subprocess.PIPE, 
-        stderr=subprocess.PIPE, 
-        text=True
-    )
+    # """
+    # if not command:
+    #     return None
 
-    if result.stderr:
-        print(result.stderr, end="", file=sys.stderr)
+    # # TODO: Add functionality for builtins later
 
-    return result.stdout
+    # executable = shutil.which(command[0])
+
+    # # Command was not found
+    # if executable is None:
+    #     return None
+    
+    # result = subprocess.run(
+    #     command, 
+    #     input=input_text, 
+    #     stdout=subprocess.PIPE, 
+    #     stderr=subprocess.PIPE, 
+    #     text=True
+    # )
+
+    # if result.stderr:
+    #     print(result.stderr, end="", file=sys.stderr)
+
+    # return result.stdout
 
 def get_command_and_file_from_redirect(command: list[str]) -> tuple[list[str], str]:
     """
@@ -819,13 +828,14 @@ def main():
             if not commands:
                 print("Error with input.")
                 continue
+            prev_command_output = run_pipeline_command(command1=commands[0], command2=commands[1])
             # print(commands)
             # break
-            prev_command_output = None
-            for cmd in commands:
-                prev_command_output = run_pipeline_command(cmd, prev_command_output)
-                if prev_command_output is None:
-                    break
+            # prev_command_output = None
+            # for cmd in commands:
+            #     prev_command_output = run_pipeline_command(cmd, prev_command_output)
+            #     if prev_command_output is None:
+            #         break
             if prev_command_output is not None:
                 print(prev_command_output, end="")
             continue
