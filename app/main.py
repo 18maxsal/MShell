@@ -649,12 +649,14 @@ def pipeline_parser(command: list[str]) -> list[list[str]]:
     #     return to_return
 
 def run_pipeline_command(command1: str, command2: str) -> str | None:
-    print(command1)
-    print(command2)
+    # print(command1)
+    # print(command2)
     if not command1 or not command2:
         return None
-    executable1 = shutil.which(command1)
-    executable2 = shutil.which(command2)
+    executable1 = shutil.which(command1[0])
+    executable2 = shutil.which(command2[0])
+    if not executable1 or not executable2:
+        return None
     result1 = subprocess.Popen(command1, stdout=subprocess.PIPE)
     result2 = subprocess.Popen(command2, stdin=result1.stdout, stdout=subprocess.PIPE)
     result1.stdout.close()
