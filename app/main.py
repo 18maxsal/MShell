@@ -646,7 +646,13 @@ def pipeline_parser(command: list[str]) -> list[list[str]]:
 
 # NOTE: JUST TESTING OUT
 def run_pipeline(commands: list[list[str]]) -> None:
-    print(commands)
+    # print(commands)
+    p1 = subprocess.Popen(commands[0], stdout=subprocess.PIPE)
+    p2 = subprocess.Popen(commands[1] ,stdin=p1.stdout)
+    p1.stdout.close()
+    p2.communicate()
+
+    # CODE BELOW WORKS AND PASSES TESTS
     # processes = []
     # prev_stdout = None
 
