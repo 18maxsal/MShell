@@ -644,106 +644,17 @@ def pipeline_parser(command: list[str]) -> list[list[str]]:
     # except ValueError:
     #     return to_return
 
-# NOTE: JUST TESTING OUT
 def run_pipeline(commands: list[list[str]]) -> None:
-    # print(commands)
-    p1 = subprocess.Popen(commands[0], stdout=subprocess.PIPE)
-    p2 = subprocess.Popen(commands[1] ,stdin=p1.stdout)
-    p1.stdout.close()
-    p2.communicate()
-
-    # CODE BELOW WORKS AND PASSES TESTS
-    # processes = []
-    # prev_stdout = None
-
-    # for i, cmd in enumerate(commands):
-    #     if not cmd:
-    #         return
-
-    #     executable = shutil.which(cmd[0])
-    #     if executable is None:
-    #         # Case: command was not found
-    #         for process in processes:
-    #             if process.poll() is None:
-    #                 process.terminate()
-    #         return
-
-    #     if i < len(commands)  - 1:
-    #         stdout_target = subprocess.PIPE
-    #     else:
-    #         stdout_target = None
-
-    #     process = subprocess.Popen(
-    #         cmd, 
-    #         stdin=prev_stdout,
-    #         stdout=stdout_target,
-    #         stderr=sys.stderr,
-    #         text=True
-    #     )
-
-    #     if prev_stdout is not None:
-    #         prev_stdout.close()
-
-    #     prev_stdout = process.stdout
-    #     processes.append(process)
-
-    # processes[-1].wait()
-
-    # for process in processes[:-1]:
-    #     if process.poll() is None:
-    #         process.terminate()
-
-    # for process in processes[:-1]:
-    #     try:
-    #         process.wait(timeout=0.2)
-    #     except subprocess.TimeoutExpired:
-    #         process.kill()
-
-
-
-def run_pipeline_command(command1: str, command2: str) -> str | None:
-    # print(command1)
-    # print(command2)
-    if not command1 or not command2:
-        return None
-    executable1 = shutil.which(command1[0])
-    executable2 = shutil.which(command2[0])
-    if not executable1 or not executable2:
-        print("Error with finding one or more commands")
-        return None
-    result1 = subprocess.Popen(command1, stdout=subprocess.PIPE)
-    result2 = subprocess.Popen(command2, stdin=result1.stdout, stdout=subprocess.PIPE)
-    if result1.stdout is not None:
-        result1.stdout.close()
-    pipeline_output, error = result2.communicate()
-    return pipeline_output.decode("utf-8")
-# def run_pipeline_command(command: list[str], input_text: str | None) -> str | None:
-    # """
+    """
     
-    # """
-    # if not command:
-    #     return None
-
-    # # TODO: Add functionality for builtins later
-
-    # executable = shutil.which(command[0])
-
-    # # Command was not found
-    # if executable is None:
-    #     return None
+    """
+    process1 = subprocess.Popen(commands[0], stdout=subprocess.PIPE)
+    process2 = subprocess.Popen(commands[1] ,stdin=process1.stdout)
+    process1.stdout.close()
+    process2.communicate()
     
-    # result = subprocess.run(
-    #     command, 
-    #     input=input_text, 
-    #     stdout=subprocess.PIPE, 
-    #     stderr=subprocess.PIPE, 
-    #     text=True
-    # )
 
-    # if result.stderr:
-    #     print(result.stderr, end="", file=sys.stderr)
 
-    # return result.stdout
 
 def get_command_and_file_from_redirect(command: list[str]) -> tuple[list[str], str]:
     """
