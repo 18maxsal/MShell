@@ -844,7 +844,8 @@ def main():
             #     prev_command_output = run_pipeline_command(cmd, prev_command_output)
             #     if prev_command_output is None:
             #         break
-            if prev_command_output is not None:
+            # if prev_command_output is not None:
+            if prev_command_output:
                 print(prev_command_output, end="")
             continue
             #     if not prev_command_output:
