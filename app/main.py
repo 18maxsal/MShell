@@ -660,7 +660,8 @@ def run_pipeline_command(command1: str, command2: str) -> str | None:
         return None
     result1 = subprocess.Popen(command1, stdout=subprocess.PIPE)
     result2 = subprocess.Popen(command2, stdin=result1.stdout, stdout=subprocess.PIPE)
-    result1.stdout.close()
+    if result1.stdout is not None:
+        result1.stdout.close()
     pipeline_output, error = result2.communicate()
     return pipeline_output.decode("utf-8")
 # def run_pipeline_command(command: list[str], input_text: str | None) -> str | None:
