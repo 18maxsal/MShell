@@ -648,6 +648,54 @@ def pipeline_parser(command: list[str]) -> list[list[str]]:
     # except ValueError:
     #     return to_return
 
+# NOTE: JUST TESTING OUT
+def run_pipeline(commands: list[list[str]]) -> None:
+    processes = []
+    prev_stdout = None
+
+    for i, cmd in enumerate(commands):
+        if not cmd:
+            return
+
+        executable = shutil.which(cmd[0])
+        if executable is None:
+            # Case: command was not found
+            for process in processes:
+                if process.poll() is None:
+                    process.terminate()
+            return
+
+        if i < len(commands)  - 1:
+            stdout_target = subprocess.PIPE
+        else:
+            stdout_target = None
+
+        process = subprocess.Popen(
+            cmd, 
+            stdin=prev_stdout,
+            stdout=stdout_target,
+            stderr=sys.stderr,
+            text=True
+        )
+
+        if prev_stdout is not None:
+            prev_stdout.close()
+
+        prev_stdout = process.stdout
+        processes.append(process)
+
+    processes[-1].wait()
+
+    for process in processes[:-1]:
+        if process.poll() is None:
+            process.terminate()
+
+    for process in processes[:-1]:
+        try:
+            process.wait(timeout=0.2)
+        except subprocess.TimeoutExpired:
+            process.kill()
+
 def run_pipeline_command(command1: str, command2: str) -> str | None:
     # print(command1)
     # print(command2)
@@ -837,7 +885,11 @@ def main():
             if not commands:
                 print("Error with input.")
                 continue
-            prev_command_output = run_pipeline_command(command1=commands[0], command2=commands[1])
+            run_pipeline(commands)
+            continue
+            # prev_command_output = run_pipeline_command(command1=commands[0], command2=commands[1])
+
+
             # print(commands)
             # break
             # prev_command_output = None
@@ -846,9 +898,13 @@ def main():
             #     if prev_command_output is None:
             #         break
             # if prev_command_output is not None:
-            if prev_command_output:
-                print(prev_command_output, end="")
-            continue
+
+
+            # if prev_command_output:
+            #     print(prev_command_output, end="")
+            # continue
+
+
             #     if not prev_command_output:
             #         result = main_loop_handler(command=cmd, 
             #                       is_redirected=is_redirected, 
