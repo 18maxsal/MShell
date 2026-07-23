@@ -239,7 +239,7 @@ def save_history() -> None:
 # def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: bool, 
 #                is_redirected_append: bool, is_redirected_append_error: bool) -> None:
 def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: bool, 
-               is_redirected_append: bool, is_redirected_append_error: bool) -> str | None:
+               is_redirected_append: bool, is_redirected_append_error: bool) -> None:
     """
     Handles the logic for the 'echo' built-in.
     Prints the given string to output.
@@ -267,12 +267,8 @@ def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: boo
         print(to_print)
         with open(file_name, "a", encoding="utf-8") as file:
             pass
-        # return to_print
     else:
         print(to_print)
-        # return to_print
-    # return "Valid input"
-    # return to_print
 
 def typeHelper(command: list[str]) -> None:
     """
@@ -650,51 +646,54 @@ def pipeline_parser(command: list[str]) -> list[list[str]]:
 
 # NOTE: JUST TESTING OUT
 def run_pipeline(commands: list[list[str]]) -> None:
-    processes = []
-    prev_stdout = None
+    print(commands)
+    # processes = []
+    # prev_stdout = None
 
-    for i, cmd in enumerate(commands):
-        if not cmd:
-            return
+    # for i, cmd in enumerate(commands):
+    #     if not cmd:
+    #         return
 
-        executable = shutil.which(cmd[0])
-        if executable is None:
-            # Case: command was not found
-            for process in processes:
-                if process.poll() is None:
-                    process.terminate()
-            return
+    #     executable = shutil.which(cmd[0])
+    #     if executable is None:
+    #         # Case: command was not found
+    #         for process in processes:
+    #             if process.poll() is None:
+    #                 process.terminate()
+    #         return
 
-        if i < len(commands)  - 1:
-            stdout_target = subprocess.PIPE
-        else:
-            stdout_target = None
+    #     if i < len(commands)  - 1:
+    #         stdout_target = subprocess.PIPE
+    #     else:
+    #         stdout_target = None
 
-        process = subprocess.Popen(
-            cmd, 
-            stdin=prev_stdout,
-            stdout=stdout_target,
-            stderr=sys.stderr,
-            text=True
-        )
+    #     process = subprocess.Popen(
+    #         cmd, 
+    #         stdin=prev_stdout,
+    #         stdout=stdout_target,
+    #         stderr=sys.stderr,
+    #         text=True
+    #     )
 
-        if prev_stdout is not None:
-            prev_stdout.close()
+    #     if prev_stdout is not None:
+    #         prev_stdout.close()
 
-        prev_stdout = process.stdout
-        processes.append(process)
+    #     prev_stdout = process.stdout
+    #     processes.append(process)
 
-    processes[-1].wait()
+    # processes[-1].wait()
 
-    for process in processes[:-1]:
-        if process.poll() is None:
-            process.terminate()
+    # for process in processes[:-1]:
+    #     if process.poll() is None:
+    #         process.terminate()
 
-    for process in processes[:-1]:
-        try:
-            process.wait(timeout=0.2)
-        except subprocess.TimeoutExpired:
-            process.kill()
+    # for process in processes[:-1]:
+    #     try:
+    #         process.wait(timeout=0.2)
+    #     except subprocess.TimeoutExpired:
+    #         process.kill()
+
+
 
 def run_pipeline_command(command1: str, command2: str) -> str | None:
     # print(command1)
