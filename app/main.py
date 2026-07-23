@@ -646,13 +646,13 @@ def pipeline_parser(command: list[str]) -> list[list[str]]:
 
 def run_pipeline(commands: list[list[str]]) -> None:
     """
-    
+    Handles command execution for when piping is used.
     """
     process1 = subprocess.Popen(commands[0], stdout=subprocess.PIPE)
     process2 = subprocess.Popen(commands[1] ,stdin=process1.stdout)
     process1.stdout.close()
     process2.communicate()
-    
+
 
 
 
@@ -840,11 +840,16 @@ def main():
             # print(prev_command_output)
 
         else:
-            result = main_loop_handler(command=command, 
+            main_loop_handler(command=command, 
                               is_redirected=is_redirected,
                               is_redirected_error=is_redirected_error, 
                               is_redirected_append=is_redirected_append, 
                               is_redirected_append_error=is_redirected_append_error)
+            # result = main_loop_handler(command=command, 
+            #                   is_redirected=is_redirected,
+            #                   is_redirected_error=is_redirected_error, 
+            #                   is_redirected_append=is_redirected_append, 
+            #                   is_redirected_append_error=is_redirected_append_error)
             # print(result)
             
         # if command[0] == "exit":
