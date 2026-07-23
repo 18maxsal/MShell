@@ -264,10 +264,10 @@ def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: boo
             file.writelines(to_print)
             file.write("\n") # may or may not need
     elif is_redirected_append_error:
-        # print(to_print)
+        print(to_print)
         with open(file_name, "a", encoding="utf-8") as file:
             pass
-        return to_print
+        # return to_print
     else:
         print(to_print)
         # return to_print
