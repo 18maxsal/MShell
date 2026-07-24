@@ -239,7 +239,8 @@ def save_history() -> None:
 # def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: bool, 
 #                is_redirected_append: bool, is_redirected_append_error: bool) -> None:
 def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: bool, 
-               is_redirected_append: bool, is_redirected_append_error: bool) -> None:
+               is_redirected_append: bool, is_redirected_append_error: bool, 
+               is_pipeline: bool = False) -> str | None:
     """
     Handles the logic for the 'echo' built-in.
     Prints the given string to output.
@@ -267,10 +268,12 @@ def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: boo
         print(to_print)
         with open(file_name, "a", encoding="utf-8") as file:
             pass
+    elif is_pipeline:
+        return to_print
     else:
         print(to_print)
 
-def typeHelper(command: list[str]) -> None:
+def typeHelper(command: list[str], is_pipeline: bool = False) -> str | None:
     """
     Handles the logic for the 'type' built-in.
     Prints whether the given command is of type built-in, 
@@ -280,17 +283,29 @@ def typeHelper(command: list[str]) -> None:
     Returns: None
     """
     if command[1] and command[1] in BUILT_INS:
-        print(f"{command[1]} is a shell builtin")
+        if is_pipeline:
+            return f"{command[1]} is a shell builtin"
+        else: 
+            print(f"{command[1]} is a shell builtin")
     else: # Command is not Built-in
         if command[1]:
             to_find = shutil.which(command[1])
             if to_find:
-                print(f"{command[1]} is {to_find}")
+                if is_pipeline:
+                    return f"{command[1]} is {to_find}"
+                else:
+                    print(f"{command[1]} is {to_find}")
             else:
-                print(f"{command[1]}: not found")
+                if is_pipeline:
+                    return f"{command[1]}: not found"
+                else:
+                    print(f"{command[1]}: not found")
 
         else: # Case: there is no command[1] (i.e. we just have "type " for input)
-            print("not found")
+            if is_pipeline:
+                return "not found"
+            else:
+                print("not found")
 
 # def externalCommandRunnerHelper(command: list[str], is_redirected: bool, 
 #                                 is_redirected_error: bool, 
@@ -648,8 +663,20 @@ def run_pipeline(commands: list[list[str]]) -> None:
     """
     Handles command execution for when piping is used.
     """
-    process1 = subprocess.Popen(commands[0], stdout=subprocess.PIPE)
-    process2 = subprocess.Popen(commands[1] ,stdin=process1.stdout)
+    # TODO: Finish implementation for built-in exection for pipelines
+    if commands[0][0] == "echo":
+        process1 = echoHelper(command=commands[0], is_pipeline=True)
+        process2 = subprocess.Popen(commands[1] ,stdin=process1)
+    # accepted_pipeline_built_ins = ["echo", "type"]
+    # if commands[0][0] in accepted_pipeline_built_ins:
+    #     process1 = subprocess.Popen(commands[0], )
+    elif commands[0][0] == "type":
+        process1 = typeHelper(command=commands[0])
+        process2 = subprocess.Popen(commands[1] ,stdin=process1)
+
+    else:
+        process1 = subprocess.Popen(commands[0], stdout=subprocess.PIPE)
+        process2 = subprocess.Popen(commands[1] ,stdin=process1.stdout)
     process1.stdout.close()
     process2.communicate()
 
