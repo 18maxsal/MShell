@@ -673,8 +673,10 @@ def run_pipeline(commands: list[list[str]]) -> None:
     # if commands[0][0] in accepted_pipeline_built_ins:
     #     process1 = subprocess.Popen(commands[0], )
     elif commands[0][0] == "type":
-        process1 = typeHelper(command=commands[0])
-        process2 = subprocess.Popen(commands[1] ,stdin=process1)
+        process2 = subprocess.Popen(commands[1] ,stdin=subprocess.PIPE, text=True)
+        process1 = typeHelper(command=commands[0], is_pipeline=True)
+        stdout, stderr = process2.communicate(input=process1)
+
 
     else:
         process1 = subprocess.Popen(commands[0], stdout=subprocess.PIPE)
