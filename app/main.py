@@ -269,7 +269,7 @@ def echoHelper(command: list[str], is_redirected: bool = False, is_redirected_er
         with open(file_name, "a", encoding="utf-8") as file:
             pass
     elif is_pipeline:
-        return (to_print + " \n")
+        return (to_print + "\n")
     else:
         print(to_print)
 
