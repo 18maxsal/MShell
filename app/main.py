@@ -663,37 +663,35 @@ def run_pipeline(commands: list[list[str]]) -> None:
     """
     Handles command execution for when piping is used.
     """
-    # TODO: Finish implementation for built-in exection for pipelines
+
+    # Case: "echo" is on the left hand side of the pipeline
     if commands[0][0] == "echo":
         process2 = subprocess.Popen(commands[1] ,stdin=subprocess.PIPE, text=True)
         process1 = echoHelper(command=commands[0], is_pipeline=True)
         # print(process1)
         stdout, stderr = process2.communicate(input=process1)
 
-    # accepted_pipeline_built_ins = ["echo", "type"]
-    # if commands[0][0] in accepted_pipeline_built_ins:
-    #     process1 = subprocess.Popen(commands[0], )
+    # Case: "type" is on the left hand side of the pipeline
     elif commands[0][0] == "type":
         process2 = subprocess.Popen(commands[1] ,stdin=subprocess.PIPE, text=True)
         process1 = typeHelper(command=commands[0], is_pipeline=True)
         stdout, stderr = process2.communicate(input=process1)
 
+    # Case: "echo" is on the right hand side of the pipeline
     elif commands[1][0] == "echo":
         process1 = subprocess.Popen(commands[0], stdout=subprocess.PIPE)
         process2 = echoHelper(command=commands[1], is_pipeline=True)
         print(process2)
         process1.stdout.close()
 
-
-
+    # Case: "type" is on the right hand side of the pipeline
     elif commands[1][0] == "type":
         process1 = subprocess.Popen(commands[0], stdout=subprocess.PIPE)
         process2 = typeHelper(command=commands[1], is_pipeline=True)
         print(process2)
         process1.stdout.close()
-        
 
-
+    # Case: Both sides of the pipeline are external commands
     else:
         process1 = subprocess.Popen(commands[0], stdout=subprocess.PIPE)
         process2 = subprocess.Popen(commands[1] ,stdin=process1.stdout)
