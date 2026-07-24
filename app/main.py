@@ -680,7 +680,7 @@ def run_pipeline(commands: list[list[str]]) -> None:
 
     elif commands[1][0] == "echo":
         process1 = subprocess.Popen(commands[0], stdout=subprocess.PIPE)
-        process2 = echoHelper(is_pipeline=True)
+        process2 = echoHelper(command=commands[1], is_pipeline=True)
         print(process2)
         process1.stdout.close()
 
@@ -688,7 +688,7 @@ def run_pipeline(commands: list[list[str]]) -> None:
 
     elif commands[1][0] == "type":
         process1 = subprocess.Popen(commands[0], stdout=subprocess.PIPE)
-        process2 = typeHelper(is_pipeline=True)
+        process2 = typeHelper(command=commands[1], is_pipeline=True)
         print(process2)
         process1.stdout.close()
         
