@@ -678,6 +678,21 @@ def run_pipeline(commands: list[list[str]]) -> None:
         process1 = typeHelper(command=commands[0], is_pipeline=True)
         stdout, stderr = process2.communicate(input=process1)
 
+    elif commands[1][0] == "echo":
+        process1 = subprocess.Popen(commands[0], stdout=subprocess.PIPE)
+        process2 = echoHelper(is_pipeline=True)
+        print(process2)
+        process1.stdout.close()
+
+
+
+    elif commands[1][0] == "type":
+        process1 = subprocess.Popen(commands[0], stdout=subprocess.PIPE)
+        process2 = typeHelper(is_pipeline=True)
+        print(process2)
+        process1.stdout.close()
+        
+
 
     else:
         process1 = subprocess.Popen(commands[0], stdout=subprocess.PIPE)
