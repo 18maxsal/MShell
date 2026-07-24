@@ -238,8 +238,8 @@ def save_history() -> None:
 
 # def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: bool, 
 #                is_redirected_append: bool, is_redirected_append_error: bool) -> None:
-def echoHelper(command: list[str], is_redirected: bool, is_redirected_error: bool, 
-               is_redirected_append: bool, is_redirected_append_error: bool, 
+def echoHelper(command: list[str], is_redirected: bool = False, is_redirected_error: bool = False, 
+               is_redirected_append: bool = False, is_redirected_append_error: bool = False, 
                is_pipeline: bool = False) -> str | None:
     """
     Handles the logic for the 'echo' built-in.
