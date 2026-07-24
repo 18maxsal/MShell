@@ -667,6 +667,7 @@ def run_pipeline(commands: list[list[str]]) -> None:
     if commands[0][0] == "echo":
         process2 = subprocess.Popen(commands[1] ,stdin=subprocess.PIPE, text=True)
         process1 = echoHelper(command=commands[0], is_pipeline=True)
+        print(process1)
         stdout, stderr = process2.communicate(input=process1)
 
     # accepted_pipeline_built_ins = ["echo", "type"]
