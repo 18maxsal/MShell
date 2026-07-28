@@ -667,7 +667,7 @@ def run_pipeline(commands: list[list[str]],
     """
 
     if input_from_prev_command:
-        print("there is input from prev command!")
+        # print("there is input from prev command!")
         if commands[0] == "echo":
             process1 = subprocess.Popen(commands, stdout=subprocess.PIPE)
             process2 = echoHelper(command=commands, is_pipeline=True)
@@ -738,6 +738,7 @@ def run_pipeline(commands: list[list[str]],
         process1.stdout.close()
         stdout, stderr = process2.communicate()
         if is_end_of_pipeline == False:
+            print("returning from both sides having external commands!")
             return stdout
         print(stdout)
 
