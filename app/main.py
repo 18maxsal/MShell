@@ -667,7 +667,7 @@ def run_pipeline(commands: list[list[str]],
     """
 
     if input_from_prev_command:
-        # print("there is input from prev command!")
+        print("there is input from prev command!")
         if commands[0] == "echo":
             process1 = subprocess.Popen(commands, stdout=subprocess.PIPE)
             process2 = echoHelper(command=commands, is_pipeline=True)
@@ -906,7 +906,7 @@ def main():
                 for i in range(2, len(commands)):
                     if i == len(commands) - 1:
                         # print("command:", commands[i])
-                        print(result)
+                        # print(result)
                         result = run_pipeline(commands=commands[i], 
                                               input_from_prev_command=result, 
                                               is_end_of_pipeline=True)
