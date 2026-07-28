@@ -892,8 +892,9 @@ def main():
             if len(commands) == 2:
                 run_pipeline(commands, is_end_of_pipeline=True)
             else:
-                print("Commands[0:2]: ", commands[0:2])
+                # print("Commands[0:2]: ", commands[0:2])
                 result = run_pipeline(commands=commands[0:2], is_end_of_pipeline=False)
+                print("Result: ", result)
                 for i in range(2, len(commands)):
                     if i == len(commands) - 1:
                         result = run_pipeline(commands=commands[i], 
