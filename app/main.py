@@ -674,7 +674,7 @@ def run_pipeline(commands: list[list[str]],
             process2 = echoHelper(command=commands, is_pipeline=True)
             if is_end_of_pipeline == False:
                 return process2
-            print(process2)
+            print(process2, end="")
             process1.stdout.close()
 
         elif commands[0] == "type":
@@ -682,7 +682,7 @@ def run_pipeline(commands: list[list[str]],
             process2 = typeHelper(command=commands[1], is_pipeline=True)
             if is_end_of_pipeline == False:
                 return process2
-            print(process2)
+            print(process2, end="")
             process1.stdout.close()
 
         else:
@@ -719,7 +719,7 @@ def run_pipeline(commands: list[list[str]],
         stdout, stderr = process2.communicate(input=process1)
         if is_end_of_pipeline == False:
             return stdout
-        print(stdout)
+        print(stdout, end="")
 
     # Case: "echo" is on the right hand side of the pipeline
     elif commands[1][0] == "echo":
@@ -727,7 +727,7 @@ def run_pipeline(commands: list[list[str]],
         process2 = echoHelper(command=commands[1], is_pipeline=True)
         if is_end_of_pipeline == False:
             return process2
-        print(process2)
+        print(process2, end="")
         process1.stdout.close()
 
     # Case: "type" is on the right hand side of the pipeline
@@ -736,7 +736,7 @@ def run_pipeline(commands: list[list[str]],
         process2 = typeHelper(command=commands[1], is_pipeline=True)
         if is_end_of_pipeline == False:
             return process2
-        print(process2)
+        print(process2, end="")
         process1.stdout.close()
 
     # Case: Both sides of the pipeline are external commands
@@ -752,7 +752,7 @@ def run_pipeline(commands: list[list[str]],
         if is_end_of_pipeline == False:
             # print("returning from both sides having external commands!")
             return stdout
-        print(stdout)
+        print(stdout, end="")
 
 
 
