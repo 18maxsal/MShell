@@ -708,7 +708,7 @@ def run_pipeline(commands: list[list[str]],
         stdout, stderr = process2.communicate(input=process1)
         if is_end_of_pipeline == False:
             return stdout
-        print(stdout)
+        print(stdout, end="")
 
     # Case: "type" is on the left hand side of the pipeline
     elif commands[0][0] == "type":
