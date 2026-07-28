@@ -692,7 +692,7 @@ def run_pipeline(commands: list[list[str]],
             stdout, stderr = process2.communicate(input=input_from_prev_command)
             if is_end_of_pipeline == False:
                 return stdout
-            print(stdout)
+            print(stdout, end="")
         return
 
 
