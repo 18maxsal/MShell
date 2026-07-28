@@ -682,7 +682,7 @@ def run_pipeline(commands: list[list[str]],
             process2 = typeHelper(command=commands[1], is_pipeline=True)
             if is_end_of_pipeline == False:
                 return process2
-            print(process2, end="")
+            print(process2)
             process1.stdout.close()
 
         else:
@@ -719,7 +719,7 @@ def run_pipeline(commands: list[list[str]],
         stdout, stderr = process2.communicate(input=process1)
         if is_end_of_pipeline == False:
             return stdout
-        print(stdout, end="")
+        print(stdout)
 
     # Case: "echo" is on the right hand side of the pipeline
     elif commands[1][0] == "echo":
