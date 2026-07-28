@@ -758,7 +758,8 @@ def run_pipeline(commands: list[list[str]],
             # print("returning from both sides having external commands!")
             stdout, stderr = process2.communicate()
             return stdout
-        process2.communicate()
+        stdout, stderr = process2.communicate()
+        print(stdout, end="")
         # print(stdout, end="")
 
 
