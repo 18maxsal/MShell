@@ -733,12 +733,16 @@ def run_pipeline(commands: list[list[str]],
 
     # Case: Both sides of the pipeline are external commands
     else:
-        process1 = subprocess.Popen(commands[0], stdout=subprocess.PIPE)
-        process2 = subprocess.Popen(commands[1] ,stdin=process1.stdout)
+        process1 = subprocess.Popen(commands[0], stdout=subprocess.PIPE, 
+                                    stderr=subprocess.PIPE, text=True)
+        process2 = subprocess.Popen(commands[1] ,stdin=process1.stdout, 
+                                    stdout=subprocess.PIPE, 
+                                    stderr=subprocess.PIPE, text=True)
         process1.stdout.close()
         stdout, stderr = process2.communicate()
+        process1.wait()
         if is_end_of_pipeline == False:
-            print("returning from both sides having external commands!")
+            # print("returning from both sides having external commands!")
             return stdout
         print(stdout)
 
