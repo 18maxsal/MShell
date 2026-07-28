@@ -892,7 +892,7 @@ def main():
             if len(commands) == 2:
                 run_pipeline(commands, is_end_of_pipeline=True)
             else:
-                result = run_pipeline(commands=commands[0:2])
+                result = run_pipeline(commands=commands[0:2], is_end_of_pipeline=False)
                 for i in range(2, len(commands)):
                     if i == len(commands) - 1:
                         result = run_pipeline(commands=commands[i], 
