@@ -685,7 +685,9 @@ def run_pipeline(commands: list[list[str]],
             process1.stdout.close()
 
         else:
-            process2 = subprocess.Popen(commands, stdin=subprocess.PIPE, text=True)
+            process2 = subprocess.Popen(commands, stdin=subprocess.PIPE, 
+                                        stdout=subprocess.PIPE,
+                                        text=True)
             # process1 = input_from_prev_command
             stdout, stderr = process2.communicate(input=input_from_prev_command)
             if is_end_of_pipeline == False:
@@ -903,7 +905,7 @@ def main():
                 # print(commands[2:])
                 for i in range(2, len(commands)):
                     if i == len(commands) - 1:
-                        print("command:", commands[i])
+                        # print("command:", commands[i])
                         result = run_pipeline(commands=commands[i], 
                                               input_from_prev_command=result, 
                                               is_end_of_pipeline=True)
