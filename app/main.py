@@ -668,6 +668,7 @@ def run_pipeline(commands: list[list[str]],
 
     if input_from_prev_command:
         # print("there is input from prev command!")
+
         if commands[0] == "echo":
             process1 = subprocess.Popen(commands, stdout=subprocess.PIPE)
             process2 = echoHelper(command=commands, is_pipeline=True)
@@ -699,7 +700,9 @@ def run_pipeline(commands: list[list[str]],
 
     # Case: "echo" is on the left hand side of the pipeline
     if commands[0][0] == "echo":
-        process2 = subprocess.Popen(commands[1] ,stdin=subprocess.PIPE, text=True)
+        process2 = subprocess.Popen(commands[1] ,stdin=subprocess.PIPE, 
+                                    stdout=subprocess.PIPE,
+                                    text=True)
         process1 = echoHelper(command=commands[0], is_pipeline=True)
         # print(process1)
         stdout, stderr = process2.communicate(input=process1)
@@ -709,7 +712,9 @@ def run_pipeline(commands: list[list[str]],
 
     # Case: "type" is on the left hand side of the pipeline
     elif commands[0][0] == "type":
-        process2 = subprocess.Popen(commands[1] ,stdin=subprocess.PIPE, text=True)
+        process2 = subprocess.Popen(commands[1] ,stdin=subprocess.PIPE, 
+                                    stdout=subprocess.PIPE,
+                                    text=True)
         process1 = typeHelper(command=commands[0], is_pipeline=True)
         stdout, stderr = process2.communicate(input=process1)
         if is_end_of_pipeline == False:
