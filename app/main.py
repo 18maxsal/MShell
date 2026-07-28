@@ -659,10 +659,40 @@ def pipeline_parser(command: list[str]) -> list[list[str]]:
     # except ValueError:
     #     return to_return
 
-def run_pipeline(commands: list[list[str]]) -> None:
+def run_pipeline(commands: list[list[str]], 
+                 input_from_prev_command: str = None, 
+                 is_end_of_pipeline: bool = False) -> str | None:
     """
     Handles command execution for when piping is used.
     """
+
+    if input_from_prev_command:
+
+        if commands[0] == "echo":
+            process1 = subprocess.Popen(commands, stdout=subprocess.PIPE)
+            process2 = echoHelper(command=commands, is_pipeline=True)
+            if is_end_of_pipeline == False:
+                return process2
+            print(process2)
+            process1.stdout.close()
+
+        elif commands[0] == "type":
+            process1 = subprocess.Popen(commands[0], stdout=subprocess.PIPE)
+            process2 = typeHelper(command=commands[1], is_pipeline=True)
+            if is_end_of_pipeline == False:
+                return process2
+            print(process2)
+            process1.stdout.close()
+
+        else:
+            process2 = subprocess.Popen(commands, stdin=subprocess.PIPE, text=True)
+            # process1 = input_from_prev_command
+            stdout, stderr = process2.communicate(input=input_from_prev_command)
+            if is_end_of_pipeline == False:
+                return stdout
+            print(stdout)
+
+
 
     # Case: "echo" is on the left hand side of the pipeline
     if commands[0][0] == "echo":
@@ -670,17 +700,25 @@ def run_pipeline(commands: list[list[str]]) -> None:
         process1 = echoHelper(command=commands[0], is_pipeline=True)
         # print(process1)
         stdout, stderr = process2.communicate(input=process1)
+        if is_end_of_pipeline == False:
+            return stdout
+        print(stdout)
 
     # Case: "type" is on the left hand side of the pipeline
     elif commands[0][0] == "type":
         process2 = subprocess.Popen(commands[1] ,stdin=subprocess.PIPE, text=True)
         process1 = typeHelper(command=commands[0], is_pipeline=True)
         stdout, stderr = process2.communicate(input=process1)
+        if is_end_of_pipeline == False:
+            return stdout
+        print(stdout)
 
     # Case: "echo" is on the right hand side of the pipeline
     elif commands[1][0] == "echo":
         process1 = subprocess.Popen(commands[0], stdout=subprocess.PIPE)
         process2 = echoHelper(command=commands[1], is_pipeline=True)
+        if is_end_of_pipeline == False:
+            return process2
         print(process2)
         process1.stdout.close()
 
@@ -688,6 +726,8 @@ def run_pipeline(commands: list[list[str]]) -> None:
     elif commands[1][0] == "type":
         process1 = subprocess.Popen(commands[0], stdout=subprocess.PIPE)
         process2 = typeHelper(command=commands[1], is_pipeline=True)
+        if is_end_of_pipeline == False:
+            return process2
         print(process2)
         process1.stdout.close()
 
@@ -696,7 +736,10 @@ def run_pipeline(commands: list[list[str]]) -> None:
         process1 = subprocess.Popen(commands[0], stdout=subprocess.PIPE)
         process2 = subprocess.Popen(commands[1] ,stdin=process1.stdout)
         process1.stdout.close()
-        process2.communicate()
+        stdout, stderr = process2.communicate()
+        if is_end_of_pipeline == False:
+            return stdout
+        print(stdout)
 
 
 
@@ -846,7 +889,18 @@ def main():
             if not commands:
                 print("Error with input.")
                 continue
-            run_pipeline(commands)
+            if len(commands) == 2:
+                run_pipeline(commands, is_end_of_pipeline=True)
+            else:
+                result = run_pipeline(commands=commands[0:2])
+                for i in range(2, len(commands)):
+                    if i == len(commands) - 1:
+                        result = run_pipeline(commands=commands[i], 
+                                              input_from_prev_command=result, 
+                                              is_end_of_pipeline=True)
+                    else:
+                        result = run_pipeline(commands=commands[i], 
+                                              input_from_prev_command=result)
             continue
             # prev_command_output = run_pipeline_command(command1=commands[0], command2=commands[1])
 
