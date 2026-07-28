@@ -743,9 +743,12 @@ def run_pipeline(commands: list[list[str]],
     else:
         process1 = subprocess.Popen(commands[0], stdout=subprocess.PIPE, 
                                     stderr=subprocess.PIPE, text=True)
-        process2 = subprocess.Popen(commands[1] ,stdin=process1.stdout, 
-                                    stdout=subprocess.PIPE, 
-                                    stderr=subprocess.PIPE, text=True)
+        # process2 = subprocess.Popen(commands[1] ,stdin=process1.stdout, 
+        #                             stdout=subprocess.PIPE, 
+        #                             stderr=subprocess.PIPE, text=True)
+        process2 = subprocess.Popen(commands[1],
+                                    stdin=process1.stdout, 
+                                    text=True)
         process1.stdout.close()
         stdout, stderr = process2.communicate()
         process2.wait()
