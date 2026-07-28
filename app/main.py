@@ -750,9 +750,10 @@ def run_pipeline(commands: list[list[str]],
                                     stdin=process1.stdout, 
                                     text=True)
         process1.stdout.close()
-        stdout, stderr = process2.communicate()
+        # stdout, stderr = process2.communicate()
         process2.wait()
         process1.wait()
+        stdout, stderr = process2.communicate()
         if is_end_of_pipeline == False:
             # print("returning from both sides having external commands!")
             return stdout
