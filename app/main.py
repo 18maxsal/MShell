@@ -682,7 +682,7 @@ def run_pipeline(commands: list[list[str]],
             process2 = typeHelper(command=commands[1], is_pipeline=True)
             if is_end_of_pipeline == False:
                 return process2
-            print(process2 + "\n")
+            print(process2)
             process1.stdout.close()
 
         else:
@@ -736,7 +736,7 @@ def run_pipeline(commands: list[list[str]],
         process2 = typeHelper(command=commands[1], is_pipeline=True)
         if is_end_of_pipeline == False:
             return process2
-        print(process2, end="")
+        print(process2)
         process1.stdout.close()
 
     # Case: Both sides of the pipeline are external commands
