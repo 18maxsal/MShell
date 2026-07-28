@@ -906,6 +906,7 @@ def main():
                 for i in range(2, len(commands)):
                     if i == len(commands) - 1:
                         # print("command:", commands[i])
+                        print(result)
                         result = run_pipeline(commands=commands[i], 
                                               input_from_prev_command=result, 
                                               is_end_of_pipeline=True)
