@@ -648,20 +648,6 @@ def pipeline_parser(command: list[str]) -> list[list[str]]:
     commands.append(current_command)
     return commands
 
-
-    # to_return = []
-    # try: 
-    #     pipeline_index = command.index("|")
-    #     # to_return.append([])
-    #     to_return = [command[:pipeline_index], command[pipeline_index + 1:]]
-    #     return to_return
-
-    # except ValueError:
-    #     return to_return
-
-# def run_pipeline(commands: list[list[str]], 
-#                  input_from_prev_command: str = None, 
-#                  is_end_of_pipeline: bool = False) -> str | None:
 def run_pipeline(commands: list[list[str]], 
                  input_from_prev_command: str = None, 
                  is_end_of_pipeline: bool = False, 
@@ -973,57 +959,7 @@ def main():
                               is_redirected_error=is_redirected_error, 
                               is_redirected_append=is_redirected_append, 
                               is_redirected_append_error=is_redirected_append_error)
-            # result = main_loop_handler(command=command, 
-            #                   is_redirected=is_redirected,
-            #                   is_redirected_error=is_redirected_error, 
-            #                   is_redirected_append=is_redirected_append, 
-            #                   is_redirected_append_error=is_redirected_append_error)
-            # print(result)
-            
-        # if command[0] == "exit":
-        #     break
-        # elif command[0] == "echo":
-        #     # echoHelper(command = command)
-        #     # echoHelper(command = command, is_redirected= is_redirected)
-        #     # echoHelper(command = command, is_redirected= is_redirected, 
-        #     #            is_redirected_error= is_redirected_error)
-        #     # echoHelper(command = command, is_redirected= is_redirected, 
-        #     #            is_redirected_error= is_redirected_error, 
-        #     #            is_redirected_append= is_redirected_append)
-        #     echoHelper(command = command, is_redirected= is_redirected, 
-        #                is_redirected_error= is_redirected_error, 
-        #                is_redirected_append= is_redirected_append, 
-        #                is_redirected_append_error= is_redirected_append_error)
-            
-        # elif command[0] == "type":
-        #     typeHelper(command = command)
-        
-        # elif command[0] == "pwd":
-        #     pwdHelper()
-        
-        # elif command[0] == "cd":
-        #     changeDirectoryHelper(command = command)
-        
-        # elif command[0] == "history":
-        #     historyHelper(args = command)
-        
-        # else:
-        #     # if not externalCommandRunnerHelper(command = command):
-        #     # if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected):
-        #     # if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected, 
-        #     #                                    is_redirected_error=is_redirected_error):
-        #     # if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected, 
-        #     #                                    is_redirected_error=is_redirected_error, 
-        #     #                                    is_redirected_append=is_redirected_append):
-        #     if not externalCommandRunnerHelper(command = command, is_redirected= is_redirected, 
-        #                                        is_redirected_error=is_redirected_error, 
-        #                                        is_redirected_append=is_redirected_append, 
-        #                                        is_redirected_append_error=is_redirected_append_error):
-        #         print(f"{command[0]}: command not found")
-        #     else:
-        #         pass
-        # sys.stdout.flush()
-
+          
     # save_history() # May not need
     append_new_history_to_file()
 
