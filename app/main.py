@@ -687,40 +687,6 @@ def run_pipeline(commands: list[list[str]],
         process.communicate(input=input_from_prev_command)
         return None
     
-
-
-
-
-
-        if commands[0] == "echo":
-            process1 = subprocess.Popen(commands, stdout=subprocess.PIPE)
-            process2 = echoHelper(command=commands, is_pipeline=True)
-            if is_end_of_pipeline == False:
-                return process2
-            print(process2, end="")
-            process1.stdout.close()
-
-        elif commands[0] == "type":
-            process1 = subprocess.Popen(commands[0], stdout=subprocess.PIPE)
-            process2 = typeHelper(command=commands[1], is_pipeline=True)
-            if is_end_of_pipeline == False:
-                return process2
-            print(process2)
-            process1.stdout.close()
-
-        else:
-            process2 = subprocess.Popen(commands, stdin=subprocess.PIPE, 
-                                        stdout=subprocess.PIPE,
-                                        text=True)
-            # process1 = input_from_prev_command
-            stdout, stderr = process2.communicate(input=input_from_prev_command)
-            if is_end_of_pipeline == False:
-                return stdout
-            print(stdout, end="")
-        return
-
-
-
     # Case: "echo" is on the left hand side of the pipeline
     if commands[0][0] == "echo":
         process2 = subprocess.Popen(commands[1] ,stdin=subprocess.PIPE, 
@@ -790,32 +756,6 @@ def run_pipeline(commands: list[list[str]],
         process2.wait()
         process1.wait()
         return None
-
-
-
-        # process1 = subprocess.Popen(commands[0], stdout=subprocess.PIPE, 
-        #                             stderr=subprocess.PIPE, text=True)
-        # process2 = subprocess.Popen(commands[1] ,stdin=process1.stdout, 
-        #                             stdout=subprocess.PIPE, 
-        #                             stderr=subprocess.PIPE, text=True)
-        # # process2 = subprocess.Popen(commands[1],
-        # #                             stdin=process1.stdout, 
-        # #                             text=True)
-        # process1.stdout.close()
-        # # stdout, stderr = process2.communicate()
-        # process2.wait()
-        # process1.wait()
-        # # stdout, stderr = process2.communicate()
-        # if is_end_of_pipeline == False:
-        #     # print("returning from both sides having external commands!")
-        #     stdout, stderr = process2.communicate()
-        #     return stdout
-        # stdout, stderr = process2.communicate()
-        # print(stdout, end="")
-        # # print(stdout, end="")
-
-
-
 
 def get_command_and_file_from_redirect(command: list[str]) -> tuple[list[str], str]:
     """
