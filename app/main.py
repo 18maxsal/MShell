@@ -829,30 +829,13 @@ def main():
 
 
     while True:
-        # sys.stdout.flush()
         # sys.stdout.write("$ ") # Used instead of print because this way does not include a newline
-        # command = input("$ ")
         command = session.prompt("$ ") # How the command gets written into the history
 
-
-        # TESTING
-        # command = string_parser(command)
-        # add_command_to_history(command)
-        
         if command.strip():
             add_command_to_history(command)
         
-        # command = command.split()
         command = string_parser(command)
-        # if [">", "1>"] in command:
-        #     is_redirected = True
-
-        # #TESTING
-        # print(command)
-        # print(get_command_and_file_from_redirect(command))
-        # break
-        
-        # print(command)
         if not command:
             continue
 
@@ -860,7 +843,7 @@ def main():
         is_redirected_error = False
         is_redirected_append = False
         is_redirected_append_error = False
-        # if [">", "1>"] in command:
+
         if ">" in command or "1>" in command:
             is_redirected = True
         elif "2>" in command:
@@ -870,14 +853,6 @@ def main():
         elif "2>>" in command:
             is_redirected_append_error = True
 
-        # is_pipe = False
-        # if "|" in command:
-        #     is_pipe = True
-        #     commands = pipeline_parser(command)
-        #     # print(commands)
-        #     if not commands:
-        #         print("Error with input")
-        #         continue
 
         if command[0] == "exit":
             break
@@ -891,67 +866,22 @@ def main():
             if len(commands) == 2:
                 run_pipeline(commands, is_end_of_pipeline=True)
             else:
-                # print("Commands[0:2]: ", commands[0:2])
-                # result = run_pipeline(commands=commands[0:2], is_end_of_pipeline=False)
                 result = run_pipeline(commands=commands[0:2], is_end_of_pipeline=False, 
                                       capture_output=True)
-                # print("Result: ", result)
-                # print(commands[2:])
                 for i in range(2, len(commands)):
                     if i == len(commands) - 1:
-                        # print("command:", commands[i])
-                        # print(result)
                         result = run_pipeline(commands=commands[i], 
                                               input_from_prev_command=result, 
                                               is_end_of_pipeline=True)
-                        # result = run_pipeline(commands=commands[i], 
-                        #                       input_from_prev_command=result, 
-                        #                       is_end_of_pipeline=True, 
-                        #                       capture_output=True)
+                        
                     else:
-                        # result = run_pipeline(commands=commands[i], 
-                        #                       input_from_prev_command=result)
                         result = run_pipeline(commands=commands[i], 
                                               input_from_prev_command=result, 
                                               capture_output=True)
                 if result is not None:
                     print(result, end="")
             continue
-            # prev_command_output = run_pipeline_command(command1=commands[0], command2=commands[1])
 
-
-            # print(commands)
-            # break
-            # prev_command_output = None
-            # for cmd in commands:
-            #     prev_command_output = run_pipeline_command(cmd, prev_command_output)
-            #     if prev_command_output is None:
-            #         break
-            # if prev_command_output is not None:
-
-
-            # if prev_command_output:
-            #     print(prev_command_output, end="")
-            # continue
-
-
-            #     if not prev_command_output:
-            #         result = main_loop_handler(command=cmd, 
-            #                       is_redirected=is_redirected, 
-            #                       is_redirected_error=is_redirected_error, 
-            #                       is_redirected_append=is_redirected_append, 
-            #                       is_redirected_append_error=is_redirected_append_error)
-            #         # prev_command_output = result
-            #         cmd.append(prev_command_output)
-            #         prev_command_output = result
-            #     else:
-            #         result = main_loop_handler(command=cmd, 
-            #                         is_redirected=is_redirected, 
-            #                         is_redirected_error=is_redirected_error, 
-            #                         is_redirected_append=is_redirected_append, 
-            #                         is_redirected_append_error=is_redirected_append_error)
-            #         prev_command_output = result
-            # print(prev_command_output)
 
         else:
             main_loop_handler(command=command, 
