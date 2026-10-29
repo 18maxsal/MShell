@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+# MShell
 [![progress-banner](https://backend.codecrafters.io/progress/shell/d4790ee8-b864-4067-a74e-5d1c427d95f6)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
 
 This is a starting point for Python solutions to the
@@ -33,6 +33,3 @@ Note: This section is for stages 2 and beyond.
    `app/main.py`.
 1. Run `codecrafters submit` to submit your solution to CodeCrafters. Test
    output will be streamed to your terminal.
-=======
-# MShell
->>>>>>> 5795a09e8ac7c4570ed419ecbc94a10562824451
